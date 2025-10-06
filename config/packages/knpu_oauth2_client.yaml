@@ -1,0 +1,9 @@
+knpu_oauth2_client:
+    clients:
+        gitlab:
+            type: gitlab
+            client_id: '%env(OAUTH_GITLAB_CLIENT_ID)%'
+            client_secret: '%env(OAUTH_GITLAB_CLIENT_SECRET)%'
+            redirect_route: app_security_gitlab_check
+            redirect_params: {}
+            domain: '%env(OAUTH_GITLAB_DOMAIN)%'

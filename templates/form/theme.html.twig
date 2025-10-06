@@ -1,0 +1,52 @@
+{% use 'tailwind_2_layout.html.twig' %}
+
+{%- block form_row -%}
+    {%- set row_class = row_class|default('sm:col-span-full') -%}
+    {{- parent() -}}
+{%- endblock form_row -%}
+
+{%- block widget_attributes -%}
+    {%- set widget_class = widget_class|default('block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500') -%}
+    {%- set widget_disabled_class = widget_disabled_class|default('disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:outline-gray-200') -%}
+    {{- parent() -}}
+{%- endblock widget_attributes -%}
+
+{%- block form_label -%}
+    {%- set label_class = label_class|default('block text-sm/6 font-medium text-gray-900 dark:text-white') -%}
+    {{- parent() -}}
+{%- endblock form_label -%}
+
+{%- block form_help -%}
+    {%- set help_class = help_class|default('mt-3 text-sm/6 text-gray-600') -%}
+    {{- parent() -}}
+{%- endblock form_help -%}
+
+{%- block form_errors -%}
+    {%- set error_item_class = error_item_class|default('mt-2 text-sm text-red-600 dark:text-gray-400') -%}
+    {{- parent() -}}
+{%- endblock form_errors -%}
+
+{%- block button_widget -%}
+    {%- set button_class = button_class|default('rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20') -%}
+    {%- set attr = attr|merge({class: (attr.class|default(button_class|default))|trim}) -%}
+    {{- parent() -}}
+{%- endblock button_widget %}
+
+{%- block submit_widget -%}
+    {%- set submit_class = submit_class|default('rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500') -%}
+    {%- set attr = attr|merge({class: (attr.class|default(submit_class|default))|trim}) -%}
+    {{- parent() -}}
+{%- endblock submit_widget %}
+
+{%- block source_row -%}
+    <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-4">
+        <div class="sm:col-span-1">
+            {{ form_row(form.type) }}
+        </div>
+        <div class="grid grid-cols-1 gap-4 mt-2 sm:col-span-2 sm:mt-0 sm:max-w-xl sm:grid-cols-6">
+            {% for child in form.content|default %}
+                {{ form_row(child) }}
+            {% endfor %}
+        </div>
+    </div>
+{%- endblock source_row -%}

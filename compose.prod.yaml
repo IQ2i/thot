@@ -1,0 +1,22 @@
+services:
+    php:
+        image: ghcr.io/iq2i/thot:main
+        env_file:
+            - .env.local
+        environment:
+            APP_SECRET: ${APP_SECRET}
+            MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
+            MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
+        volumes:
+            - ./credentials/:/app/credentials
+
+    php-worker:
+        image: ghcr.io/iq2i/thot:main
+        command: [ 'bin/console', 'messenger:consume', 'async', '-vv', '--time-limit=300', '--limit=25', '--memory-limit=512M' ]
+        depends_on:
+            php:
+                condition: service_healthy
+
+    meilisearch:
+        environment:
+            MEILI_SCHEDULE_SNAPSHOT: 86400

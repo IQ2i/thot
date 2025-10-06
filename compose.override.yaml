@@ -1,0 +1,39 @@
+services:
+    php:
+        build:
+            context: .
+            target: frankenphp_dev
+        volumes:
+            - ./:/app
+            - ./.infrastructure/frankenphp/Caddyfile:/etc/frankenphp/Caddyfile:ro
+            - ./.infrastructure/frankenphp/conf.d/20-app.dev.ini:/usr/local/etc/php/app.conf.d/20-app.dev.ini:ro
+        environment:
+            FRANKENPHP_WORKER_CONFIG: watch
+            MERCURE_EXTRA_DIRECTIVES: demo
+            # See https://xdebug.org/docs/all_settings#mode
+            XDEBUG_MODE: "${XDEBUG_MODE:-off}"
+            APP_ENV: "${APP_ENV:-dev}"
+        extra_hosts:
+            # Ensure that host.docker.internal is correctly defined on Linux
+            - host.docker.internal:host-gateway
+        tty: true
+
+    php-worker:
+        build:
+            context: .
+            target: frankenphp_dev
+        command: [ 'bin/console', 'messenger:consume', 'async', '-vv', '--time-limit=30', '--limit=10', '--memory-limit=128M' ]
+        volumes:
+            - ./:/app
+            - /app/var/
+        depends_on:
+            php:
+                condition: service_healthy
+
+    admin:
+        image: adminer
+        restart: always
+        depends_on:
+            - database
+        ports:
+            - "8080:8080"

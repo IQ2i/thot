@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@source '../**/*.html.twig';
+@source '../**/*.js';
+@source '../../vendor/symfony/twig-bridge/Resources/views/Form/*.html.twig';
+
+@plugin '@tailwindcss/typography';
+
+@media screen and (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+label.required:after {
+    content:" *";
+    color: red;
+}
+
+.p-1\.5 {
+    padding: calc(var(--spacing) * 1.5);
+}

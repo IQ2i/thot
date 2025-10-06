@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-white dark:bg-gray-900">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>{% block meta_title %}Thot{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+
+        {% block stylesheets %}{% endblock %}
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+
+    <body class="h-full" {% block body_attributes %}{% endblock %}>
+        <twig:Layout:Flashes/>
+
+        <el-dialog>
+            <dialog id="sidebar" class="backdrop:bg-transparent xl:hidden">
+                <el-dialog-backdrop class="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-closed:opacity-0"></el-dialog-backdrop>
+
+                <div tabindex="0" class="fixed inset-0 flex focus:outline-none">
+                    <el-dialog-panel class="group/dialog-panel relative mr-16 flex w-full max-w-xs flex-1 transform transition duration-300 ease-in-out data-closed:-translate-x-full">
+                        <div class="absolute top-0 left-full flex w-16 justify-center pt-5 duration-300 ease-in-out group-data-closed/dialog-panel:opacity-0">
+                            <button type="button" command="close" commandfor="sidebar" class="-m-2.5 p-2.5">
+                                <span class="sr-only">Close sidebar</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 text-white">
+                                    <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Sidebar component, swap this element with another sidebar if you like -->
+                        <div class="relative flex grow flex-col gap-y-5 overflow-y-auto bg-gray-50 px-6 dark:bg-gray-900 dark:ring dark:ring-white/10 dark:before:pointer-events-none dark:before:absolute dark:before:inset-0 dark:before:bg-black/10">
+                            <a href="{{ path('app_homepage_detail') }}" class="relative flex h-16 shrink-0 items-center">
+                                <twig:ux:icon name="logo" class="h-8 w-auto dark:hidden"/>
+                                <twig:ux:icon name="logo-dark" class="h-8 w-auto not-dark:hidden"/>
+                            </a>
+                            <nav class="relative flex flex-1 flex-col">
+                                <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <li>
+                                            <twig:Layout:Menu:Items />
+                                        </li>
+                                    {% endif %}
+                                    <li>
+                                        <twig:Layout:Menu:Conversations />
+                                    </li>
+                                    <li class="-mx-6 mt-auto">
+                                        <twig:Layout:Menu:UserProfile />
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </el-dialog-panel>
+                </div>
+            </dialog>
+        </el-dialog>
+
+        <!-- Static sidebar for desktop -->
+        <div class="hidden xl:fixed xl:inset-y-0 xl:z-50 xl:flex xl:w-72 xl:flex-col dark:bg-gray-900">
+            <!-- Sidebar component, swap this element with another sidebar if you like -->
+            <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-50 px-6 ring-1 ring-gray-200 dark:bg-black/10 dark:ring-white/5">
+                <a href="{{ path('app_homepage_detail') }}" class="flex h-16 shrink-0 items-center">
+                    <twig:ux:icon name="logo" class="h-8 w-auto dark:hidden"/>
+                    <twig:ux:icon name="logo-dark" class="h-8 w-auto not-dark:hidden"/>
+                </a>
+                <nav class="flex flex-1 flex-col">
+                    <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li>
+                                <twig:Layout:Menu:Items />
+                            </li>
+                        {% endif %}
+                        <li>
+                            <twig:Layout:Menu:Conversations />
+                        </li>
+                        <li class="-mx-6 mt-auto">
+                            <twig:Layout:Menu:UserProfile />
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div class="h-full xl:pl-72">
+            <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-gray-200 bg-white px-4 shadow-xs sm:px-6 lg:px-8 dark:border-white/5 dark:bg-gray-900 dark:shadow-none">
+                <button type="button" command="show-modal" commandfor="sidebar" class="-m-2.5 p-2.5 text-gray-900 xl:hidden dark:text-white">
+                    <span class="sr-only">Open sidebar</span>
+                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5">
+                        <path d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75ZM2 10a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 10Zm0 5.25a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" fill-rule="evenodd" />
+                    </svg>
+                </button>
+
+                <div class="w-full flex items-center md:justify-between">
+                    <div class="min-w-0 flex-1">
+                        <h1 id="header-title" class="text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight dark:text-white">{% block header_title %}{% endblock %}</h1>
+                    </div>
+                    <div class="flex md:mt-0 md:ml-4 gap-x-4">
+                        {% block header_actions %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+
+            <main class="h-full">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+
+        <twig:Layout:Menu:SelectProjectModal />
+    </body>
+</html>

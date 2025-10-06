@@ -1,0 +1,16 @@
+<ul role="list" class="-mx-2 space-y-1">
+    {% for item in items %}
+        <li>
+            <a href="{{ item.url }}" class="{{ html_classes('group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold', {
+                'bg-gray-100 dark:bg-white/5 text-indigo-600 dark:text-white': item.active,
+                'text-gray-700 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5': not item.active,
+            }) }}">
+                <twig:ux:icon name="{{ item.icon }}" class="{{ html_classes('size-6 shrink-0', {
+                    'text-indigo-600 dark:text-white': item.active,
+                    'text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white': not item.active,
+                }) }}" />
+                {{ item.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>

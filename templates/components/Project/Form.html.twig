@@ -1,0 +1,47 @@
+<div {{ attributes }}>
+    {{ form_start(form, {attr: {id: field_id(form)}}) }}
+        <div class="divide-y divide-gray-200 dark:divide-white/10">
+            <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                <div>
+                    <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Project Information</h2>
+                    <p class="mt-1 text-sm/6 text-gray-500 dark:text-gray-400">Basic information about your project</p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
+                        {{ form_row(form.name) }}
+                        {{ form_row(form.startedAt, {row_class: 'sm:col-span-3'}) }}
+                        {{ form_row(form.endedAt, {row_class: 'sm:col-span-3'}) }}
+                        {{ form_row(form.description) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                <div>
+                    <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">External sources</h2>
+                    <p class="mt-1 text-sm/6 text-gray-500 dark:text-gray-400">Connect your external data sources to power your project</p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
+                        {{ form_row(form.sources) }}
+                    </div>
+                </div>
+            </div>
+
+            {% if initialFormData.id is not null %}
+                <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                    <div>
+                        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Delete project</h2>
+                        <p class="mt-1 text-sm/6 text-gray-500 dark:text-gray-400">This action is not reversible and all information related to this project will be deleted permanently</p>
+                    </div>
+
+                    <div class="flex items-start md:col-span-2">
+                        <a href="{{ path('app_project_delete', {id: initialFormData.id}) }}" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 dark:bg-red-500 dark:shadow-none dark:hover:bg-red-400">Yes, delete this project</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {{ form_end(form) }}
+</div>

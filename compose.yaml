@@ -1,0 +1,69 @@
+services:
+    php:
+        image: ${IMAGES_PREFIX:-}app-php
+        restart: unless-stopped
+        environment:
+            SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
+            MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+            MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+            MERCURE_URL: ${CADDY_MERCURE_URL:-http://php/.well-known/mercure}
+            MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL:-https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}/.well-known/mercure}
+            MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+        volumes:
+            - caddy_data:/data
+            - caddy_config:/config
+        ports:
+            # HTTP
+            -   target: 80
+                published: ${HTTP_PORT:-80}
+                protocol: tcp
+            # HTTPS
+            -   target: 443
+                published: ${HTTPS_PORT:-443}
+                protocol: tcp
+            # HTTP/3
+            -   target: 443
+                published: ${HTTP3_PORT:-443}
+                protocol: udp
+
+    php-worker:
+        image: ${IMAGES_PREFIX:-}app-php-worker
+        restart: unless-stopped
+        environment:
+            SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
+            MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+            MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+            MERCURE_URL: ${CADDY_MERCURE_URL:-http://php/.well-known/mercure}
+            MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL:-https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}/.well-known/mercure}
+            MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+        command: php bin/console messenger:consume async -v
+
+    database:
+        image: postgres:18-alpine
+        restart: on-failure
+        volumes:
+            - db-data:/var/lib/postgresql/data:rw
+        environment:
+            POSTGRES_DB: thot
+            POSTGRES_PASSWORD: thot
+            POSTGRES_USER: thot
+        healthcheck:
+            test: [ "CMD", "pg_isready", "-d", "${POSTGRES_DB:-thot}", "-U", "${POSTGRES_USER:-thot}" ]
+            timeout: 5s
+            retries: 5
+            start_period: 60s
+
+    meilisearch:
+        image: getmeili/meilisearch:v1.19
+        restart: on-failure
+        environment:
+            MEILI_MASTER_KEY: 8c559d76fc4610a0
+            MEILI_NO_ANALYTICS: true
+        volumes:
+            - db-meilisearch:/meili_data
+
+volumes:
+  db-data:
+  db-meilisearch:
+  caddy_data:
+  caddy_config:

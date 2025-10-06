@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block header_title %}
+    {% if user.id is not null %}
+        Edit user - {{ user.username }}
+    {% else %}
+        New user
+    {% endif %}
+{% endblock %}
+
+{% block header_actions %}
+    {% if user.id is not null %}
+        <a href="{{ path('app_user_delete', {id: user.id}) }}" class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">Delete</a>
+    {% endif %}
+    <button type="submit" form="{{ field_id(form) }}" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400">Save</button>
+{% endblock %}
+
+{% block content %}
+    {{ form_start(form, {attr: {id: field_id(form)}}) }}
+        <div class="divide-y divide-gray-200 dark:divide-white/10">
+            <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                <div>
+                    <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Personal Information</h2>
+                    <p class="mt-1 text-sm/6 text-gray-500 dark:text-gray-400">Basic information about this user</p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
+                        {{ form_row(form.username) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                <div>
+                    <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Security</h2>
+                    <p class="mt-1 text-sm/6 text-gray-500 dark:text-gray-400">Enter the user's login information and permission level</p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
+                        {{ form_row(form.roles) }}
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.plainPassword) }}
+                    </div>
+                </div>
+            </div>
+
+            {% if user.id is not null %}
+                <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                    <div>
+                        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Delete user</h2>
+                        <p class="mt-1 text-sm/6 text-gray-500 dark:text-gray-400">This action is not reversible and all information related to this user will be deleted permanently</p>
+                    </div>
+
+                    <div class="flex items-start md:col-span-2">
+                        <a href="{{ path('app_user_delete', {id: user.id}) }}" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 dark:bg-red-500 dark:shadow-none dark:hover:bg-red-400">Yes, delete this user</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

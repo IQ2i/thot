@@ -21,6 +21,17 @@ services:
             php:
                 condition: service_healthy
 
+    php-scheduler:
+        image: ghcr.io/iq2i/thot:main
+        env_file:
+            - .env.local
+        environment:
+            APP_SECRET: ${APP_SECRET}
+        command: [ 'bin/console', 'messenger:consume', 'scheduler_default', '-vv', '--time-limit=300', '--limit=25', '--memory-limit=512M' ]
+        depends_on:
+            php:
+                condition: service_healthy
+
     meilisearch:
         environment:
             MEILI_SCHEDULE_SNAPSHOT: 86400

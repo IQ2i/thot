@@ -22,6 +22,9 @@ abstract class Source
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $lastUpdatedAt = null;
+
     #[ORM\ManyToOne(inversedBy: 'sources')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Project $project = null;
@@ -40,6 +43,18 @@ abstract class Source
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getLastUpdatedAt(): ?\DateTime
+    {
+        return $this->lastUpdatedAt;
+    }
+
+    public function setLastUpdatedAt(?\DateTime $lastUpdatedAt): static
+    {
+        $this->lastUpdatedAt = $lastUpdatedAt;
+
+        return $this;
     }
 
     abstract public function getType(): ?SourceType;

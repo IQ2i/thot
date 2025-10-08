@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Project;
+use App\Entity\Source;
 use App\Form\ProjectType;
+use App\Service\SourceUpdater;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,6 +67,23 @@ class ProjectController extends AbstractController
             'form' => $form,
             'project' => $project,
         ]);
+    }
+
+    #[Route('/{id<\d+>}/sources', name: 'sources')]
+    public function sources(Project $project): Response
+    {
+        return $this->render('project/sources.html.twig', [
+            'project' => $project,
+        ]);
+    }
+
+    #[Route('/{project}/sources/{source}/update', name: 'source_update')]
+    public function sourceUpdate(Project $project, Source $source, SourceUpdater $sourceUpdater): Response
+    {
+        $sourceUpdater->update($source);
+        $this->addFlash('success', 'Source updated');
+
+        return $this->redirectToRoute('app_project_logs', ['id' => $project->getId()]);
     }
 
     #[Route('/delete/{id<\d+>}', name: 'delete')]

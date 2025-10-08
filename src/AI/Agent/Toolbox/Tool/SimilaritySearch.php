@@ -2,6 +2,7 @@
 
 namespace App\AI\Agent\Toolbox\Tool;
 
+use Psr\Log\LoggerInterface;
 use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
 use Symfony\AI\Store\Document\VectorizerInterface;
 use Symfony\AI\Store\StoreInterface;
@@ -12,6 +13,7 @@ readonly class SimilaritySearch
     public function __construct(
         private VectorizerInterface $vectorizer,
         private StoreInterface $store,
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -23,6 +25,8 @@ readonly class SimilaritySearch
      */
     public function __invoke(string $query, string $project, ?bool $closed = null, ?bool $sort = null): string
     {
+        $this->logger->info('"similarity_search" function called', ['query' => $query, 'project' => $project, 'closed' => $closed, 'sort' => $sort]);
+
         $filter = 'project = '.$project;
         if (null !== $closed) {
             $filter .= ' AND closed = '.$closed;
@@ -41,6 +45,8 @@ readonly class SimilaritySearch
         $documents = $this->store->query($vector, $options);
 
         if ([] === $documents) {
+            $this->logger->info('"similarity_search" function result', ['result' => 'No results found']);
+
             return 'No results found';
         }
 
@@ -48,6 +54,8 @@ readonly class SimilaritySearch
         foreach ($documents as $document) {
             $result .= json_encode($document->metadata->getArrayCopy());
         }
+
+        $this->logger->info('"similarity_search" function result', ['result' => $result]);
 
         return $result;
     }

@@ -97,7 +97,7 @@ readonly class AiManager
     private function getToolbox(): ToolboxInterface
     {
         return new Toolbox([
-            new SimilaritySearch($this->getVectorizer(), $this->getStore()),
+            new SimilaritySearch($this->getVectorizer(), $this->getStore(), $this->logger),
         ], logger: $this->logger);
     }
 

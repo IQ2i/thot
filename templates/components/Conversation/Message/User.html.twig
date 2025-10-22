@@ -1,6 +1,6 @@
 {% props message %}
 
-<div id="message-{{ message.id }}" class="flex flex-col items-end gap-2.5">
+<div id="message-{{ message.id }}" class="flex flex-col items-end gap-2.5" {{ attributes }}>
     <div class="flex w-fit px-4 py-1 border-gray-200 bg-gray-100 rounded-s-xl rounded-ee-xl dark:bg-gray-700">
         <p class="py-2.5 text-gray-900 dark:text-white">
             {{ message.content }}

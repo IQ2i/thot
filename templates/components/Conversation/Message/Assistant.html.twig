@@ -1,6 +1,6 @@
 {% props message %}
 
-<div id="message-{{ message.id }}" class="flex flex-col justify-start items-start w-full gap-2.5">
+<div id="message-{{ message.id }}" class="flex flex-col justify-start items-start w-full gap-2.5" {{ attributes }}>
     <div class="w-full prose dark:prose-invert">
         {% if message.content is not null %}
             {{ message.content|markdown_to_html }}

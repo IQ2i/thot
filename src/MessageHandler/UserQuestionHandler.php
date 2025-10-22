@@ -53,7 +53,9 @@ final readonly class UserQuestionHandler
             $message->setContent('An error occurred: '.$e->getMessage());
         }
 
+        $message->setCreatedAt(new \DateTime());
         $this->entityManager->flush();
+
         $this->eventDispatcher->dispatch(new AgentResponseEvent($message->getContent(), $message->getConversation(), $error), Events::AGENT_RESPONSE);
         $this->hub->publish(new Update(
             'conversation#'.$message->getConversation()->getId(),

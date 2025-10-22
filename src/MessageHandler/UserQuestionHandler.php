@@ -4,12 +4,14 @@ namespace App\MessageHandler;
 
 use App\AI\AiManager;
 use App\Entity\Message;
+use App\Event\AgentResponseEvent;
+use App\Events;
 use App\Message\UserQuestionMessage;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 
 #[AsMessageHandler]
@@ -17,10 +19,10 @@ final readonly class UserQuestionHandler
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
+        private EventDispatcherInterface $eventDispatcher,
         private HubInterface $hub,
         private Environment $twig,
         private AiManager $aiManager,
-        private LoggerInterface $logger,
     ) {
     }
 
@@ -30,10 +32,6 @@ final readonly class UserQuestionHandler
 
         if ($userQuestion->firstMessage) {
             try {
-                $this->logger->info('Generate title for conversation', [
-                    'conversation_id' => $message->getConversation()->getId(),
-                ]);
-
                 $result = $this->aiManager->generateConversationName($userQuestion->question);
                 $name = $result->getContent();
                 $message->getConversation()->setName($name);
@@ -42,44 +40,24 @@ final readonly class UserQuestionHandler
                     'conversation#'.$message->getConversation()->getId(),
                     $this->twig->render('conversation/name.stream.html.twig', ['conversation' => $message->getConversation()])
                 ));
-            } catch (\Throwable $e) {
-                $this->logger->error('An error occurred during title generation', ['exception' => $e->getMessage()]);
+            } catch (\Throwable) {
             }
         }
 
-        $response = '';
+        $error = false;
         try {
-            $this->logger->info('Generate message for conversation', [
-                'conversation_id' => $message->getConversation()->getId(),
-            ]);
-
             $result = $this->aiManager->ask($message->getConversation());
-            foreach ($result->getContent() as $word) {
-                $response .= $word;
-                $message->setContent($response);
-
-                if ('' !== $message->getContent()) {
-                    $this->logger->debug('New chunk of content received from LLM', [
-                        'conversation_id' => $message->getConversation()->getId(),
-                        'chunk' => $word,
-                    ]);
-
-                    $this->hub->publish(new Update(
-                        'conversation#'.$message->getConversation()->getId(),
-                        $this->twig->render('conversation/message.stream.html.twig', ['message' => $message])
-                    ));
-                }
-            }
+            $message->setContent($result->getContent());
         } catch (\Throwable $e) {
-            $message->setContent('An error occurred');
-            $this->logger->error('An error occurred during message generation', ['exception' => $e->getMessage()]);
-
-            $this->hub->publish(new Update(
-                'conversation#'.$message->getConversation()->getId(),
-                $this->twig->render('conversation/message.stream.html.twig', ['message' => $message])
-            ));
+            $error = true;
+            $message->setContent('An error occurred: '.$e->getMessage());
         }
 
         $this->entityManager->flush();
+        $this->eventDispatcher->dispatch(new AgentResponseEvent($message->getContent(), $message->getConversation(), $error), Events::AGENT_RESPONSE);
+        $this->hub->publish(new Update(
+            'conversation#'.$message->getConversation()->getId(),
+            $this->twig->render('conversation/message.stream.html.twig', ['message' => $message])
+        ));
     }
 }

@@ -5,9 +5,12 @@ namespace App\Twig\Components\Conversation;
 use App\Entity\Conversation;
 use App\Entity\Message;
 use App\Enum\MessageType;
+use App\Event\UserAskEvent;
+use App\Events;
 use App\Message\UserQuestionMessage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
@@ -27,7 +30,7 @@ class Feed
     public ?string $question = null;
 
     #[LiveAction]
-    public function ask(EntityManagerInterface $entityManager, MessageBusInterface $bus): void
+    public function ask(EntityManagerInterface $entityManager, MessageBusInterface $bus, EventDispatcherInterface $eventDispatcher): void
     {
         $firstMessage = $this->conversation->getMessages()->isEmpty();
 
@@ -41,6 +44,8 @@ class Feed
         $this->conversation->addMessage($assistantMessage);
 
         $entityManager->flush();
+
+        $eventDispatcher->dispatch(new UserAskEvent($this->question, $this->conversation), Events::AGENT_ASK);
 
         $bus->dispatch(new UserQuestionMessage(
             question: $this->question,

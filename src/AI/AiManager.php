@@ -7,7 +7,6 @@ use App\AI\Platform\Bridge\Ovh\PlatformFactory;
 use App\AI\Store\Bridge\Meilisearch\Store;
 use App\Entity\Conversation;
 use App\Enum\MessageType;
-use Psr\Log\LoggerInterface;
 use Symfony\AI\Agent\Agent;
 use Symfony\AI\Agent\Toolbox\AgentProcessor;
 use Symfony\AI\Agent\Toolbox\Toolbox;
@@ -26,6 +25,7 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\ThrottlingHttpClient;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\RateLimiter\Storage\InMemoryStorage;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 readonly class AiManager
@@ -41,7 +41,7 @@ readonly class AiManager
         private string $meilisearchHost,
         #[Autowire(env: 'MEILISEARCH_MASTER_KEY')]
         private string $meilisearchApiKey,
-        private LoggerInterface $logger,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -89,16 +89,16 @@ readonly class AiManager
     public function ask(Conversation $conversation): ResultInterface
     {
         $processor = new AgentProcessor($this->getToolbox());
-        $agent = new Agent($this->getPlatform(), self::CHAT_MODEL, [$processor], [$processor], logger: $this->logger);
+        $agent = new Agent($this->getPlatform(), self::CHAT_MODEL, [$processor], [$processor]);
 
-        return $agent->call($this->getMessageBag($conversation), ['stream' => true]);
+        return $agent->call($this->getMessageBag($conversation));
     }
 
     private function getToolbox(): ToolboxInterface
     {
         return new Toolbox([
-            new SimilaritySearch($this->getVectorizer(), $this->getStore(), $this->logger),
-        ], logger: $this->logger);
+            new SimilaritySearch($this->getVectorizer(), $this->getStore()),
+        ], eventDispatcher: $this->eventDispatcher);
     }
 
     private function getPlatform(): Platform
@@ -108,7 +108,7 @@ readonly class AiManager
 
     private function getVectorizer(): Vectorizer
     {
-        return new Vectorizer($this->getPlatform(), self::EMBEDDING_MODEL, $this->logger);
+        return new Vectorizer($this->getPlatform(), self::EMBEDDING_MODEL);
     }
 
     private function getStore(): Store

@@ -6,6 +6,10 @@ namespace App\Controller;
 
 use App\Entity\Project;
 use App\Entity\Source;
+use App\Event\CreateProjectEvent;
+use App\Event\DeleteProjectEvent;
+use App\Event\EditProjectEvent;
+use App\Events;
 use App\Form\ProjectType;
 use App\Service\SourceUpdater;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,20 +17,29 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+#[IsGranted('ROLE_ADMIN')]
 #[Route('/projects', name: 'app_project_')]
 class ProjectController extends AbstractController
 {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly EventDispatcherInterface $eventDispatcher,
+    ) {
+    }
+
     #[Route('', name: 'index')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(): Response
     {
         return $this->render('project/index.html.twig', [
-            'projects' => $entityManager->getRepository(Project::class)->findAll(),
+            'projects' => $this->entityManager->getRepository(Project::class)->findAll(),
         ]);
     }
 
     #[Route('/new', name: 'new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request): Response
     {
         $project = new Project();
 
@@ -34,9 +47,10 @@ class ProjectController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($project);
-            $entityManager->flush();
+            $this->entityManager->persist($project);
+            $this->entityManager->flush();
 
+            $this->eventDispatcher->dispatch(new CreateProjectEvent($project), Events::PROJECT_CREATE);
             $this->addFlash('success', 'Project created');
 
             return $this->redirectToRoute('app_project_edit', ['id' => $project->getId()]);
@@ -49,15 +63,15 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/{id<\d+>}/edit', name: 'edit')]
-    public function edit(Request $request, EntityManagerInterface $entityManager, Project $project): Response
+    public function edit(Request $request, Project $project): Response
     {
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($project);
-            $entityManager->flush();
+            $this->entityManager->flush();
 
+            $this->eventDispatcher->dispatch(new EditProjectEvent($project), Events::PROJECT_EDIT);
             $this->addFlash('success', 'Project updated');
 
             return $this->redirectToRoute('app_project_edit', ['id' => $project->getId()]);
@@ -83,14 +97,16 @@ class ProjectController extends AbstractController
         $sourceUpdater->update($source);
         $this->addFlash('success', 'Source updated');
 
-        return $this->redirectToRoute('app_project_logs', ['id' => $project->getId()]);
+        return $this->redirectToRoute('app_project_sources', ['id' => $project->getId()]);
     }
 
     #[Route('/delete/{id<\d+>}', name: 'delete')]
-    public function delete(EntityManagerInterface $entityManager, Project $project): Response
+    public function delete(Project $project): Response
     {
-        $entityManager->remove($project);
-        $entityManager->flush();
+        $this->eventDispatcher->dispatch(new DeleteProjectEvent($project), Events::PROJECT_DELETE);
+
+        $this->entityManager->remove($project);
+        $this->entityManager->flush();
 
         $this->addFlash('success', 'Project deleted');
 

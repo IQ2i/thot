@@ -44,9 +44,16 @@ readonly class SimilaritySearch
             return 'No results found';
         }
 
+        $documentUrls = [];
         $result = 'Found documents with following information:'.\PHP_EOL;
         foreach ($documents as $document) {
-            $result .= json_encode($document->metadata->getArrayCopy());
+            $data = $document->metadata->getArrayCopy();
+            if (\in_array($data['web_url'], $documentUrls, true)) {
+                continue;
+            }
+
+            $documentUrls[] = $data['web_url'];
+            $result .= json_encode($data);
         }
 
         return $result;

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block header_title %}Logs{% endblock %}
+{% block header_title %}{{ 'log.title'|trans }}{% endblock %}
 
 {% block content %}
     <div class="py-6 px-4 sm:py-8 sm:px-6 lg:py-12 lg:px-8">
@@ -10,10 +10,10 @@
                     <table class="relative min-w-full divide-y divide-gray-300 dark:divide-white/15">
                         <thead>
                             <tr>
-                                <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-0 dark:text-white">Date</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">Level</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">Message</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">Additional content</th>
+                                <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-0 dark:text-white">{{ 'log.date'|trans }}</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">{{ 'log.level'|trans }}</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">{{ 'log.message'|trans }}</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">{{ 'log.additional_content'|trans }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-white/10">
@@ -24,7 +24,7 @@
                                     <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ log.message }}</td>
                                     <td class="px-3 py-4 text-sm font-medium whitespace-nowrap sm:pr-0">
                                         {% if log.additionalContent is not null %}
-                                            <button command="show-modal" commandfor="dialog-{{ log.id }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">View additional content</button>
+                                            <button command="show-modal" commandfor="dialog-{{ log.id }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">{{ 'log.view_additional_content'|trans }}</button>
                                             <el-dialog>
                                                 <dialog id="dialog-{{ log.id }}" aria-labelledby="dialog-title" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
                                                     <el-dialog-backdrop class="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in dark:bg-gray-900/50"></el-dialog-backdrop>
@@ -33,7 +33,7 @@
                                                         <el-dialog-panel class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-3xl sm:p-6 data-closed:sm:translate-y-0 data-closed:sm:scale-95 dark:bg-gray-800 dark:outline dark:-outline-offset-1 dark:outline-white/10">
                                                             <div class="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
                                                                 <button type="button" command="close" commandfor="dialog-{{ log.id }}" class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-800 dark:hover:text-gray-300 dark:focus:outline-white">
-                                                                    <span class="sr-only">Close</span>
+                                                                    <span class="sr-only">{{ 'action.close'|trans }}</span>
                                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6">
                                                                         <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
                                                                     </svg>

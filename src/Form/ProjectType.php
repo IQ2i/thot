@@ -21,24 +21,24 @@ class ProjectType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Name',
+                'label' => 'form.name',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
                 ],
             ])
             ->add('startedAt', DateType::class, [
-                'label' => 'Started at',
+                'label' => 'form.started_at',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('endedAt', DateType::class, [
-                'label' => 'Ended at',
+                'label' => 'form.ended_at',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description, additional information',
+                'label' => 'form.description',
                 'required' => false,
             ])
             ->add('sources', LiveCollectionType::class, [

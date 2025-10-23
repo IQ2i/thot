@@ -23,14 +23,14 @@ class UserType extends AbstractType
     {
         $builder
             ->add('username', TextType::class, [
-                'label' => 'Username',
+                'label' => 'form.username',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
                 ],
             ])
             ->add('email', EmailType::class, [
-                'label' => 'Email',
+                'label' => 'form.email',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
@@ -39,15 +39,15 @@ class UserType extends AbstractType
             ->add('plainPassword', RepeatedType::class, [
                 'required' => false,
                 'type' => PasswordType::class,
-                'first_options' => ['label' => 'Password', 'hash_property_path' => 'password'],
-                'second_options' => ['label' => 'Repeat Password'],
+                'first_options' => ['label' => 'form.password', 'hash_property_path' => 'password'],
+                'second_options' => ['label' => 'form.repeat_password'],
                 'mapped' => false,
             ])
             ->add('roles', ChoiceType::class, [
-                'label' => 'Role',
+                'label' => 'form.role',
                 'choices' => [
-                    'Admin' => 'ROLE_ADMIN',
-                    'User' => 'ROLE_USER',
+                    'form.role_admin' => 'ROLE_ADMIN',
+                    'form.role_user' => 'ROLE_USER',
                 ],
                 'required' => true,
                 'constraints' => [

@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block header_title %}Users{% endblock %}
+{% block header_title %}{{ 'user.title'|trans }}{% endblock %}
 {% block header_actions %}
-    <a href="{{ path('app_user_new') }}" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400">New</a>
+    <a href="{{ path('app_user_new') }}" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400">{{ 'action.new'|trans }}</a>
 {% endblock %}
 
 {% block content %}
@@ -19,17 +19,17 @@
                         </div>
                     </div>
                     <div class="flex flex-none items-center gap-x-4">
-                        <a href="{{ path('app_user_edit', {id: user.id}) }}" class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:block dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">Edit user<span class="sr-only">, {{ user.username }}</span></a>
+                        <a href="{{ path('app_user_edit', {id: user.id}) }}" class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:block dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">{{ 'user.edit_user'|trans }}<span class="sr-only">{{ 'sr.edit_user'|trans({'%username%': user.username}) }}</span></a>
                         <el-dropdown class="relative flex-none">
                             <button class="relative block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
                                 <span class="absolute -inset-2.5"></span>
-                                <span class="sr-only">Open options</span>
+                                <span class="sr-only">{{ 'menu.open_options'|trans }}</span>
                                 <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5">
                                     <path d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
                                 </svg>
                             </button>
                             <el-menu anchor="bottom end" popover class="w-32 origin-top-right rounded-md bg-white py-2 shadow-lg outline-1 outline-gray-900/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-                                <a href="{{ path('app_user_delete', {id: user.id}) }}" class="block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 focus:outline-hidden dark:text-white dark:focus:bg-white/5">Delete</a>
+                                <a href="{{ path('app_user_delete', {id: user.id}) }}" class="block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 focus:outline-hidden dark:text-white dark:focus:bg-white/5">{{ 'action.delete'|trans }}</a>
                             </el-menu>
                         </el-dropdown>
                     </div>

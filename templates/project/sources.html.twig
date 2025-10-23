@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block header_title %}
-    Logs - {{ project.name }}
+    {{ 'sources.title'|trans({'%name%': project.name}) }}
 {% endblock %}
 
 {% block content %}
     <div class="py-6 px-4 sm:py-8 sm:px-6 lg:py-12 lg:px-8">
         <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
-                <h1 class="text-base font-semibold text-gray-900 dark:text-white">Documents</h1>
-                <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">A list of sources with the number of documents and an action to force the source sync</p>
+                <h1 class="text-base font-semibold text-gray-900 dark:text-white">{{ 'sources.sources'|trans }}</h1>
+                <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">{{ 'sources.sources_desc'|trans }}</p>
             </div>
         </div>
         <div class="mt-8 flow-root">
@@ -18,11 +18,11 @@
                     <table class="relative min-w-full divide-y divide-gray-300 dark:divide-white/15">
                         <thead>
                             <tr>
-                                <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-0 dark:text-white">Source</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">Number of documents</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">Last update</th>
+                                <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-0 dark:text-white">{{ 'sources.source'|trans }}</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">{{ 'sources.number_of_documents'|trans }}</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">{{ 'sources.last_update'|trans }}</th>
                                 <th scope="col" class="py-3.5 pr-4 pl-3 sm:pr-0">
-                                    <span class="sr-only">Sync now</span>
+                                    <span class="sr-only">{{ 'sources.sync_now'|trans }}</span>
                                 </th>
                             </tr>
                         </thead>
@@ -35,7 +35,7 @@
                                         {% if source.lastUpdatedAt is not null %}{{ source.lastUpdatedAt|format_datetime('long', 'short') }}{% endif %}
                                     </td>
                                     <td class="py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-0">
-                                        <a href="{{ path('app_project_source_update', {project: project.id, source: source.id}) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Force sync</a>
+                                        <a href="{{ path('app_project_source_update', {project: project.id, source: source.id}) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">{{ 'action.force_sync'|trans }}</a>
                                     </td>
                                 </tr>
                             {% endfor %}

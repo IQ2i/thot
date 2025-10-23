@@ -11,7 +11,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Translation\LocaleSwitcher;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 #[AsMessageHandler]
@@ -23,11 +26,15 @@ final readonly class UserQuestionHandler
         private HubInterface $hub,
         private Environment $twig,
         private AiManager $aiManager,
+        private TranslatorInterface $translator,
+        private LocaleSwitcher $localeSwitcher,
     ) {
     }
 
     public function __invoke(UserQuestionMessage $userQuestion): void
     {
+        $this->localeSwitcher->setLocale($userQuestion->locale);
+
         $message = $this->entityManager->find(Message::class, $userQuestion->messageId);
 
         if ($userQuestion->firstMessage) {
@@ -55,7 +62,7 @@ final readonly class UserQuestionHandler
                             'conversation#'.$message->getConversation()->getId(),
                             $this->twig->render('conversation/waiting_agent.stream.html.twig', [
                                 'id' => $message->getId(),
-                                'content' => 'Reasoning...',
+                                'content' => new TranslatableMessage('agent.reasoning'),
                             ])
                         ));
                         break;
@@ -65,7 +72,7 @@ final readonly class UserQuestionHandler
                             'conversation#'.$message->getConversation()->getId(),
                             $this->twig->render('conversation/waiting_agent.stream.html.twig', [
                                 'id' => $message->getId(),
-                                'content' => 'Searching for document...',
+                                'content' => new TranslatableMessage('agent.searching_document'),
                             ])
                         ));
                         break;
@@ -84,7 +91,7 @@ final readonly class UserQuestionHandler
             }
         } catch (\Throwable $e) {
             $error = true;
-            $response = 'An error occurred: '.$e->getMessage();
+            $response = $this->translator->trans('agent.error_occurred', ['%message%' => $e->getMessage()]);
             $this->hub->publish(new Update(
                 'conversation#'.$message->getConversation()->getId(),
                 $this->twig->render('conversation/agent_response.stream.html.twig', [

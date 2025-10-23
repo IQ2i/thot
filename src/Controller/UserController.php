@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[IsGranted('ROLE_ADMIN')]
@@ -47,7 +48,7 @@ class UserController extends AbstractController
             $this->entityManager->flush();
 
             $this->eventDispatcher->dispatch(new CreateUserEvent($user), Events::USER_CREATE);
-            $this->addFlash('success', 'User created');
+            $this->addFlash('success', new TranslatableMessage('flash.user_created'));
 
             return $this->redirectToRoute('app_user_edit', ['id' => $user->getId()]);
         }
@@ -67,7 +68,7 @@ class UserController extends AbstractController
             $this->entityManager->flush();
 
             $this->eventDispatcher->dispatch(new EditUserEvent($user), Events::USER_EDIT);
-            $this->addFlash('success', 'User updated');
+            $this->addFlash('success', new TranslatableMessage('flash.user_updated'));
 
             return $this->redirectToRoute('app_user_edit', ['id' => $user->getId()]);
         }
@@ -86,7 +87,7 @@ class UserController extends AbstractController
         $this->entityManager->remove($user);
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'User deleted');
+        $this->addFlash('success', new TranslatableMessage('flash.user_deleted'));
 
         return $this->redirectToRoute('app_user_index');
     }

@@ -10,6 +10,7 @@ use App\Events;
 use App\Message\UserQuestionMessage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Translation\LocaleSwitcher;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -30,7 +31,7 @@ class Feed
     public ?string $question = null;
 
     #[LiveAction]
-    public function ask(EntityManagerInterface $entityManager, MessageBusInterface $bus, EventDispatcherInterface $eventDispatcher): void
+    public function ask(EntityManagerInterface $entityManager, MessageBusInterface $bus, EventDispatcherInterface $eventDispatcher, LocaleSwitcher $localeSwitcher): void
     {
         $firstMessage = $this->conversation->getMessages()->isEmpty();
 
@@ -48,6 +49,7 @@ class Feed
         $eventDispatcher->dispatch(new UserAskEvent($this->question, $this->conversation), Events::AGENT_ASK);
 
         $bus->dispatch(new UserQuestionMessage(
+            locale: $localeSwitcher->getLocale(),
             question: $this->question,
             messageId: $assistantMessage->getId(),
             firstMessage: $firstMessage,

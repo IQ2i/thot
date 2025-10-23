@@ -20,11 +20,11 @@ class GitlabType extends AbstractType
     {
         $builder
             ->add('projectUrl', UrlType::class, [
-                'label' => 'URL du project GitLab',
+                'label' => 'form.gitlab_project_url',
                 'required' => false,
             ])
             ->add('accessToken', TextType::class, [
-                'label' => 'Token d\'accès à l\'API GitLab',
+                'label' => 'form.gitlab_access_token',
                 'required' => false,
             ])
         ;

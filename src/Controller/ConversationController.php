@@ -18,7 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_USER')]
 #[Route('/conversations', name: 'app_conversation_')]
@@ -27,6 +29,7 @@ class ConversationController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -42,7 +45,7 @@ class ConversationController extends AbstractController
         }
 
         $conversation = new Conversation()
-            ->setName('New conversation')
+            ->setName($this->translator->trans('entity.new_conversation'))
             ->setUser($user)
             ->setProject($project);
 
@@ -72,7 +75,7 @@ class ConversationController extends AbstractController
             $this->entityManager->flush();
 
             $this->eventDispatcher->dispatch(new EditConversationEvent($conversation), Events::CONVERSATION_EDIT);
-            $this->addFlash('success', 'Conversation updated');
+            $this->addFlash('success', new TranslatableMessage('flash.conversation_updated'));
 
             return $this->redirectToRoute('app_conversation_detail', ['id' => $conversation->getId()]);
         }
@@ -91,7 +94,7 @@ class ConversationController extends AbstractController
         $entityManager->remove($conversation);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Conversation deleted');
+        $this->addFlash('success', new TranslatableMessage('flash.conversation_deleted'));
 
         return $this->redirectToRoute('app_homepage_detail');
     }

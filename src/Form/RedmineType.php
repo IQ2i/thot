@@ -20,11 +20,11 @@ class RedmineType extends AbstractType
     {
         $builder
             ->add('projectUrl', UrlType::class, [
-                'label' => 'URL du project Redmine',
+                'label' => 'form.redmine_project_url',
                 'required' => false,
             ])
             ->add('accessToken', TextType::class, [
-                'label' => 'Token d\'accès à l\'API Redmine',
+                'label' => 'form.redmine_access_token',
                 'required' => false,
             ])
         ;

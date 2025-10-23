@@ -8,6 +8,7 @@ use Symfony\Component\Messenger\Attribute\AsMessage;
 final class UserQuestionMessage
 {
     public function __construct(
+        public string $locale,
         public string $question,
         public int $messageId,
         public bool $firstMessage = false,

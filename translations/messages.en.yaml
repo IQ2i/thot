@@ -1,0 +1,138 @@
+# Authentication
+auth:
+  sign_in_to_account: 'Sign in to your account'
+  email_address: 'Email address'
+  password: 'Password'
+  remember_me: 'Remember me'
+  sign_in: 'Sign in'
+  or_continue_with: 'Or continue with'
+
+# Common actions
+action:
+  new: 'New'
+  edit: 'Edit'
+  delete: 'Delete'
+  save: 'Save'
+  select: 'Select'
+  close: 'Close'
+  force_sync: 'Force sync'
+
+# User management
+user:
+  title: 'Users'
+  edit_user: 'Edit user'
+  edit_user_with_name: 'Edit user - %username%'
+  new_user: 'New user'
+  delete_user: 'Delete user'
+  delete_user_warning: 'This action is not reversible and all information related to this user will be deleted permanently'
+  delete_user_confirm: 'Yes, delete this user'
+  personal_information: 'Personal Information'
+  personal_information_desc: 'Basic information about this user'
+  security: 'Security'
+  security_desc: "Enter the user's login information and permission level"
+
+# Project management
+project:
+  title: 'Projects'
+  edit_project: 'Edit project'
+  edit_project_with_name: 'Edit project - %name%'
+  new_project: 'New project'
+  delete_project: 'Delete project'
+  delete_project_warning: 'This action is not reversible and all information related to this project will be deleted permanently'
+  delete_project_confirm: 'Yes, delete this project'
+  sources_count: '%count% sources'
+  project_information: 'Project Information'
+  project_information_desc: 'Basic information about your project'
+  external_sources: 'External sources'
+  external_sources_desc: 'Connect your external data sources to power your project'
+
+# Sources
+sources:
+  title: 'Logs - %name%'
+  sources: 'Sources'
+  sources_desc: 'A list of sources with the number of documents and an action to force the source sync'
+  documents: 'Documents'
+  documents_desc: 'A list of sources with the number of documents and an action to force the source sync'
+  source: 'Source'
+  number_of_documents: 'Number of documents'
+  last_update: 'Last update'
+  sync_now: 'Sync now'
+
+# Conversations
+conversation:
+  title: 'Conversations'
+  new_conversation: 'New conversation'
+  edit_conversation: 'Edit conversation - %name%'
+  conversation_information: 'Conversation Information'
+  conversation_information_desc: 'Basic information about this conversation'
+  ask_question: 'Ask a question'
+  start_new_conversation: 'Start a new conversation'
+  select_project_desc: 'Select the project for which you want to start a new conversation.'
+
+# Logs
+log:
+  title: 'Logs'
+  date: 'Date'
+  level: 'Level'
+  message: 'Message'
+  additional_content: 'Additional content'
+  view_additional_content: 'View additional content'
+
+# Menu
+menu:
+  open_sidebar: 'Open sidebar'
+  close_sidebar: 'Close sidebar'
+  your_profile: 'Your profile'
+  open_options: 'Open options'
+  projects: 'Projects'
+  users: 'Users'
+  logs: 'Logs'
+
+# Flashes
+flash:
+  success: 'Success'
+  error: 'An error occured'
+  user_created: 'User created'
+  user_updated: 'User updated'
+  user_deleted: 'User deleted'
+  project_created: 'Project created'
+  project_updated: 'Project updated'
+  project_deleted: 'Project deleted'
+  source_updated: 'Source updated'
+  conversation_updated: 'Conversation updated'
+  conversation_deleted: 'Conversation deleted'
+
+# Form labels
+form:
+  username: 'Username'
+  email: 'Email'
+  password: 'Password'
+  repeat_password: 'Repeat Password'
+  role: 'Role'
+  role_admin: 'Admin'
+  role_user: 'User'
+  name: 'Name'
+  started_at: 'Started at'
+  ended_at: 'Ended at'
+  description: 'Description, additional information'
+  source_type: 'Source type'
+  gitlab_project_url: 'GitLab project URL'
+  gitlab_access_token: 'GitLab API access token'
+  google_doc_url: 'Document URL'
+  redmine_project_url: 'Redmine project URL'
+  redmine_access_token: 'Redmine API access token'
+
+# Entity values
+entity:
+  new_conversation: 'New conversation'
+
+# Agent status
+agent:
+  reasoning: 'Reasoning...'
+  searching_document: 'Searching for document...'
+  error_occurred: 'An error occurred: %message%'
+
+# Screen reader only
+sr:
+  edit_user: ', %username%'
+  edit_project: ', %name%'

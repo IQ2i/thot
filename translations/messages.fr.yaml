@@ -1,0 +1,136 @@
+# Authentification
+auth:
+  sign_in_to_account: 'Connectez-vous à votre compte'
+  email_address: 'Adresse e-mail'
+  password: 'Mot de passe'
+  remember_me: 'Se souvenir de moi'
+  sign_in: 'Se connecter'
+  or_continue_with: 'Ou continuer avec'
+
+# Actions communes
+action:
+  new: 'Nouveau'
+  edit: 'Modifier'
+  delete: 'Supprimer'
+  save: 'Enregistrer'
+  select: 'Sélectionner'
+  close: 'Fermer'
+  force_sync: 'Forcer la synchronisation'
+
+# Gestion des utilisateurs
+user:
+  title: 'Utilisateurs'
+  edit_user: 'Modifier l''utilisateur'
+  edit_user_with_name: 'Modifier l''utilisateur - %username%'
+  new_user: 'Nouvel utilisateur'
+  delete_user: 'Supprimer l''utilisateur'
+  delete_user_warning: 'Cette action est irréversible et toutes les informations relatives à cet utilisateur seront définitivement supprimées'
+  delete_user_confirm: 'Oui, supprimer cet utilisateur'
+  personal_information: 'Informations personnelles'
+  personal_information_desc: 'Informations de base sur cet utilisateur'
+  security: 'Sécurité'
+  security_desc: 'Saisissez les informations de connexion et le niveau de permission de l''utilisateur'
+
+# Gestion des projets
+project:
+  title: 'Projets'
+  edit_project: 'Modifier le projet'
+  edit_project_with_name: 'Modifier le projet - %name%'
+  new_project: 'Nouveau projet'
+  delete_project: 'Supprimer le projet'
+  delete_project_warning: 'Cette action est irréversible et toutes les informations relatives à ce projet seront définitivement supprimées'
+  delete_project_confirm: 'Oui, supprimer ce projet'
+  sources_count: '%count% sources'
+  project_information: 'Informations du projet'
+  project_information_desc: 'Informations de base sur votre projet'
+  external_sources: 'Sources externes'
+  external_sources_desc: 'Connectez vos sources de données externes pour alimenter votre projet'
+
+# Sources
+sources:
+  title: 'Logs - %name%'
+  sources: 'Sources'
+  sources_desc: 'Liste des sources avec le nombre de documents et une action pour forcer la synchronisation de la source'
+  source: 'Source'
+  number_of_documents: 'Nombre de documents'
+  last_update: 'Dernière mise à jour'
+  sync_now: 'Synchroniser maintenant'
+
+# Conversations
+conversation:
+  title: 'Conversations'
+  new_conversation: 'Nouvelle conversation'
+  edit_conversation: 'Modifier la conversation - %name%'
+  conversation_information: 'Informations de la conversation'
+  conversation_information_desc: 'Informations de base sur cette conversation'
+  ask_question: 'Poser une question'
+  start_new_conversation: 'Démarrer une nouvelle conversation'
+  select_project_desc: 'Sélectionnez le projet pour lequel vous souhaitez démarrer une nouvelle conversation.'
+
+# Logs
+log:
+  title: 'Logs'
+  date: 'Date'
+  level: 'Niveau'
+  message: 'Message'
+  additional_content: 'Contenu additionnel'
+  view_additional_content: 'Voir le contenu additionnel'
+
+# Menu
+menu:
+  open_sidebar: 'Ouvrir la barre latérale'
+  close_sidebar: 'Fermer la barre latérale'
+  your_profile: 'Votre profil'
+  open_options: 'Ouvrir les options'
+  projects: 'Projets'
+  users: 'Utilisateurs'
+  logs: 'Logs'
+
+# Flashes
+flash:
+  success: 'Succès'
+  error: 'Une erreur est survenue'
+  user_created: 'Utilisateur créé'
+  user_updated: 'Utilisateur mis à jour'
+  user_deleted: 'Utilisateur supprimé'
+  project_created: 'Projet créé'
+  project_updated: 'Projet mis à jour'
+  project_deleted: 'Projet supprimé'
+  source_updated: 'Source mise à jour'
+  conversation_updated: 'Conversation mise à jour'
+  conversation_deleted: 'Conversation supprimée'
+
+# Libellés de formulaires
+form:
+  username: 'Nom d''utilisateur'
+  email: 'E-mail'
+  password: 'Mot de passe'
+  repeat_password: 'Répéter le mot de passe'
+  role: 'Rôle'
+  role_admin: 'Administrateur'
+  role_user: 'Utilisateur'
+  name: 'Nom'
+  started_at: 'Débuté le'
+  ended_at: 'Terminé le'
+  description: 'Description, informations additionnelles'
+  source_type: 'Type de source'
+  gitlab_project_url: 'URL du projet GitLab'
+  gitlab_access_token: 'Token d''accès à l''API GitLab'
+  google_doc_url: 'URL du document'
+  redmine_project_url: 'URL du projet Redmine'
+  redmine_access_token: 'Token d''accès à l''API Redmine'
+
+# Valeurs d'entités
+entity:
+  new_conversation: 'Nouvelle conversation'
+
+# Statut de l'agent
+agent:
+  reasoning: 'Réflexion...'
+  searching_document: 'Recherche de document...'
+  error_occurred: 'Une erreur s''est produite : %message%'
+
+# Textes pour lecteurs d'écran uniquement
+sr:
+  edit_user: ', %username%'
+  edit_project: ', %name%'

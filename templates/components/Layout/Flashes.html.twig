@@ -3,9 +3,9 @@
         {% for label, messages in app.flashes(['success', 'error']) %}
             {% for message in messages %}
 
-                {% set title, color = 'Success', 'text-green-400' %}
+                {% set title, color = 'flash.success'|trans, 'text-green-400' %}
                 {% if label == 'error' %}
-                    {% set title, color = 'An error occured', 'text-red-400' %}
+                    {% set title, color = 'flash.error'|trans, 'text-red-400' %}
                 {% endif %}
 
                 <div data-controller="alert" class="pointer-events-auto w-full max-w-sm translate-y-0 transform rounded-lg bg-white opacity-100 shadow-lg outline-1 outline-black/5 transition duration-300 ease-out sm:translate-x-0 dark:bg-gray-800 dark:-outline-offset-1 dark:outline-white/10 starting:translate-y-2 starting:opacity-0 starting:sm:translate-x-2 starting:sm:translate-y-0">
@@ -18,11 +18,11 @@
                             </div>
                             <div class="ml-3 w-0 flex-1 pt-0.5">
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">{{ title }}</p>
-                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ message }}</p>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ message|trans }}</p>
                             </div>
                             <div class="ml-4 flex shrink-0">
                                 <button data-action="alert#hide" type="button" class="inline-flex rounded-md text-gray-400 hover:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:hover:text-white dark:focus:outline-indigo-500">
-                                    <span class="sr-only">Close</span>
+                                    <span class="sr-only">{{ 'action.close'|trans }}</span>
                                     <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5">
                                         <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
                                     </svg>

@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[IsGranted('ROLE_ADMIN')]
@@ -51,7 +52,7 @@ class ProjectController extends AbstractController
             $this->entityManager->flush();
 
             $this->eventDispatcher->dispatch(new CreateProjectEvent($project), Events::PROJECT_CREATE);
-            $this->addFlash('success', 'Project created');
+            $this->addFlash('success', new TranslatableMessage('flash.project_created'));
 
             return $this->redirectToRoute('app_project_edit', ['id' => $project->getId()]);
         }
@@ -72,7 +73,7 @@ class ProjectController extends AbstractController
             $this->entityManager->flush();
 
             $this->eventDispatcher->dispatch(new EditProjectEvent($project), Events::PROJECT_EDIT);
-            $this->addFlash('success', 'Project updated');
+            $this->addFlash('success', new TranslatableMessage('flash.project_updated'));
 
             return $this->redirectToRoute('app_project_edit', ['id' => $project->getId()]);
         }
@@ -95,7 +96,7 @@ class ProjectController extends AbstractController
     public function sourceUpdate(Project $project, Source $source, SourceUpdater $sourceUpdater): Response
     {
         $sourceUpdater->update($source);
-        $this->addFlash('success', 'Source updated');
+        $this->addFlash('success', new TranslatableMessage('flash.source_updated'));
 
         return $this->redirectToRoute('app_project_sources', ['id' => $project->getId()]);
     }
@@ -108,7 +109,7 @@ class ProjectController extends AbstractController
         $this->entityManager->remove($project);
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Project deleted');
+        $this->addFlash('success', new TranslatableMessage('flash.project_deleted'));
 
         return $this->redirectToRoute('app_project_index');
     }

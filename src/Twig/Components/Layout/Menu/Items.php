@@ -4,6 +4,7 @@ namespace App\Twig\Components\Layout\Menu;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
 
@@ -26,9 +27,9 @@ readonly class Items
         $pathInfo = $request->getPathInfo();
 
         return [
-            ['name' => 'Projects', 'icon' => 'heroicons:folder', 'url' => $this->router->generate('app_project_index'), 'active' => str_starts_with($pathInfo, $this->router->generate('app_project_index'))],
-            ['name' => 'Users', 'icon' => 'heroicons:users', 'url' => $this->router->generate('app_user_index'), 'active' => str_starts_with($pathInfo, $this->router->generate('app_user_index'))],
-            ['name' => 'Logs', 'icon' => 'heroicons:circle-stack', 'url' => $this->router->generate('app_log_index'), 'active' => str_starts_with($pathInfo, $this->router->generate('app_log_index'))],
+            ['name' => new TranslatableMessage('menu.projects'), 'icon' => 'heroicons:folder', 'url' => $this->router->generate('app_project_index'), 'active' => str_starts_with($pathInfo, $this->router->generate('app_project_index'))],
+            ['name' => new TranslatableMessage('menu.users'), 'icon' => 'heroicons:users', 'url' => $this->router->generate('app_user_index'), 'active' => str_starts_with($pathInfo, $this->router->generate('app_user_index'))],
+            ['name' => new TranslatableMessage('menu.logs'), 'icon' => 'heroicons:circle-stack', 'url' => $this->router->generate('app_log_index'), 'active' => str_starts_with($pathInfo, $this->router->generate('app_log_index'))],
         ];
     }
 }

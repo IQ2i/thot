@@ -26,7 +26,7 @@ class SourceType extends AbstractType
 
         $builder
             ->add('type', ChoiceType::class, [
-                'label' => 'Source type',
+                'label' => 'form.source_type',
                 'required' => false,
                 'choices' => [
                     'GitLab' => Gitlab::class,

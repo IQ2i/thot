@@ -93,6 +93,7 @@ readonly class AiManager
 
         return $agent->call($this->getMessageBag($conversation), [
             'temperature' => 0.4,
+            'reasoning_effort' => 'low',
             'stream' => true,
         ]);
     }

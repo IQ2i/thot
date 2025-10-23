@@ -20,7 +20,7 @@ class ConversationType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Name',
+                'label' => 'form.name',
                 'constraints' => [
                     new NotBlank(),
                 ],

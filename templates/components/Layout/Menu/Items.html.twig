@@ -9,7 +9,7 @@
                     'text-indigo-600 dark:text-white': item.active,
                     'text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white': not item.active,
                 }) }}" />
-                {{ item.name }}
+                {{ item.name|trans }}
             </a>
         </li>
     {% endfor %}

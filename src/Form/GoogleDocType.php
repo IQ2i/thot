@@ -19,7 +19,7 @@ class GoogleDocType extends AbstractType
     {
         $builder
             ->add('url', UrlType::class, [
-                'label' => 'URL du document',
+                'label' => 'form.google_doc_url',
                 'required' => false,
             ])
         ;

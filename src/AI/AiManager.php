@@ -170,7 +170,7 @@ readonly class AiManager
             
             # Core rules
             - You must never invent, guess, or rely on external knowledge.
-            - If the provided data does not contain the answer, respond only with: "I don’t have enough information to answer this question based on the provided project data."
+            - If the provided data does not contain the answer, respond only with: "I don’t have enough information to answer this question based on the provided project data." in the same language as the user’s question.
             - All your answers must be related **exclusively** to the current project. Ignore any other request.
             - Always answer in the same language as the user’s question.
             - Answers must be in **Markdown** format with clear structure (titles, lists, links, code blocks if needed).

@@ -32,7 +32,7 @@ readonly class AiManager
 {
     private const string EMBEDDING_MODEL = 'bge-multilingual-gemma2';
     private const string TITLE_GENERATION_MODEL = 'gpt-oss-20b';
-    private const string CHAT_MODEL = 'gpt-oss-120b';
+    private const string CHAT_MODEL = 'gpt-oss-20b';
 
     public function __construct(
         #[Autowire(env: 'OVH_API_KEY')]
@@ -91,7 +91,10 @@ readonly class AiManager
         $processor = new AgentProcessor($this->getToolbox());
         $agent = new Agent($this->getPlatform(), self::CHAT_MODEL, [$processor], [$processor]);
 
-        return $agent->call($this->getMessageBag($conversation));
+        return $agent->call($this->getMessageBag($conversation), [
+            'temperature' => 0.4,
+            'stream' => true,
+        ]);
     }
 
     private function getToolbox(): ToolboxInterface

@@ -12,9 +12,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Scheduler\Attribute\AsPeriodicTask;
+use Symfony\Component\Scheduler\Attribute\AsCronTask;
 
-#[AsPeriodicTask(frequency: '7 days', from: '00:00')]
+#[AsCronTask('0 0 * * 0')]
 #[AsCommand(name: 'app:log:delete', description: 'Delete old logs based on retention period')]
 class DeleteLogCommand extends Command
 {

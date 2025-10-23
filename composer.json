@@ -10,6 +10,7 @@
         "doctrine/dbal": "^3.10.2",
         "doctrine/doctrine-bundle": "^2.16.2",
         "doctrine/orm": "^3.5.2",
+        "dragonmantank/cron-expression": "^3.4",
         "google/apiclient": "^2.18.4",
         "knpuniversity/oauth2-client-bundle": "^2.19",
         "league/commonmark": "^2.7.1",

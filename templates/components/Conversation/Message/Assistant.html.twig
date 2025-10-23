@@ -1,11 +1,9 @@
-{% props message %}
+{% props id, content = null %}
 
-<div id="message-{{ message.id }}" class="flex flex-col justify-start items-start w-full gap-2.5" {{ attributes }}>
+<div id="message-{{ id }}" class="flex flex-col justify-start items-start w-full gap-2.5" {{ attributes }}>
     <div class="w-full prose dark:prose-invert">
-        {% if message.content is not null %}
-            {{ message.content|markdown_to_html }}
-        {% else %}
-            <twig:ux:icon name="eos-icons:bubble-loading" class="size-6"/>
+        {% if content is not null %}
+            {{ content|markdown_to_html }}
         {% endif %}
     </div>
 </div>

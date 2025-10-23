@@ -2,7 +2,6 @@
 
 namespace App\AI\Platform\Bridge\Ovh;
 
-use Symfony\AI\Platform\Bridge\OpenAi\Contract\OpenAiContract;
 use Symfony\AI\Platform\Contract;
 use Symfony\AI\Platform\ModelCatalog\ModelCatalogInterface;
 use Symfony\AI\Platform\Platform;
@@ -29,7 +28,7 @@ final readonly class PlatformFactory
                 new Embeddings\ResultConverter(),
             ],
             $modelCatalog,
-            $contract ?? OpenAiContract::create(),
+            $contract,
         );
     }
 }

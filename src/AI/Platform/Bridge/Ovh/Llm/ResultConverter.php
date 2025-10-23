@@ -3,10 +3,7 @@
 namespace App\AI\Platform\Bridge\Ovh\Llm;
 
 use App\AI\Platform\Bridge\Ovh\Ovh;
-use Symfony\AI\Platform\Exception\AuthenticationException;
-use Symfony\AI\Platform\Exception\BadRequestException;
 use Symfony\AI\Platform\Exception\ContentFilterException;
-use Symfony\AI\Platform\Exception\RateLimitExceededException;
 use Symfony\AI\Platform\Exception\RuntimeException;
 use Symfony\AI\Platform\Model;
 use Symfony\AI\Platform\Result\ChoiceResult;
@@ -31,38 +28,17 @@ final class ResultConverter implements ResultConverterInterface
 
     public function convert(RawResultInterface|RawHttpResult $result, array $options = []): ResultInterface
     {
-        $response = $result->getObject();
-
-        if (403 === $response->getStatusCode()) {
-            $errorMessage = json_decode($response->getContent(false), true)['message'];
-            throw new AuthenticationException($errorMessage);
-        }
-
-        if (400 === $response->getStatusCode()) {
-            $errorMessage = json_decode($response->getContent(false), true)['message'] ?? 'Bad Request';
-            throw new BadRequestException($errorMessage);
-        }
-
-        if (429 === $response->getStatusCode()) {
-            throw new RateLimitExceededException();
-        }
-
         if ($options['stream'] ?? false) {
-            return new StreamResult($this->convertStream($response));
+            return new StreamResult($this->convertStream($result->getObject()));
         }
-
         $data = $result->getData();
 
         if (isset($data['error']['code']) && 'content_filter' === $data['error']['code']) {
             throw new ContentFilterException($data['error']['message']);
         }
 
-        if (isset($data['error'])) {
-            throw new RuntimeException(\sprintf('Error "%s"-%s (%s): "%s".', $data['error']['code'], $data['error']['type'], $data['error']['param'], $data['error']['message']));
-        }
-
         if (!isset($data['choices'])) {
-            throw new RuntimeException('Response does not contain choices.');
+            throw new RuntimeException('Result does not contain choices.');
         }
 
         $choices = array_map($this->convertChoice(...), $data['choices']);
@@ -80,12 +56,20 @@ final class ResultConverter implements ResultConverterInterface
 
             $data = $chunk->getArrayData();
 
+            if (isset($data['choices'][0]['delta']['tool_calls'])) {
+                yield '[TOOL_CALLS]';
+            }
+
             if ($this->streamIsToolCall($data)) {
                 $toolCalls = $this->convertStreamToToolCalls($toolCalls, $data);
             }
 
             if ([] !== $toolCalls && $this->isToolCallsStreamFinished($data)) {
                 yield new ToolCallResult(...array_map($this->convertToolCall(...), $toolCalls));
+            }
+
+            if (isset($data['choices'][0]['delta']['reasoning_content'])) {
+                yield '[REASONING]';
             }
 
             if (!isset($data['choices'][0]['delta']['content'])) {

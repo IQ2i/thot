@@ -2,9 +2,9 @@
     <div class="flex grow flex-col items-end gap-y-10 mb-10 overflow-hidden lg:w-3xl lg:mx-auto" data-feed-target="messages" data-skip-morph>
         {% for message in conversation.messages %}
             {% if message.type == enum('App\\Enum\\MessageType').USER %}
-                <twig:Conversation:Message:User :message="message" />
+                <twig:Conversation:Message:User :id="message.id" :content="message.content" :createdAt="message.createdAt" />
             {% elseif message.type == enum('App\\Enum\\MessageType').ASSISTANT %}
-                <twig:Conversation:Message:Assistant :message="message" />
+                <twig:Conversation:Message:Assistant :id="message.id" :content="message.content" />
             {% endif %}
         {% endfor %}
     </div>

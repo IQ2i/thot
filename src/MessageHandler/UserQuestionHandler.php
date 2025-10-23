@@ -46,20 +46,58 @@ final readonly class UserQuestionHandler
 
         $error = false;
         try {
+            $response = '';
             $result = $this->aiManager->ask($message->getConversation());
-            $message->setContent($result->getContent());
+            foreach ($result->getContent() as $word) {
+                switch ($word) {
+                    case '[REASONING]':
+                        $this->hub->publish(new Update(
+                            'conversation#'.$message->getConversation()->getId(),
+                            $this->twig->render('conversation/waiting_agent.stream.html.twig', [
+                                'id' => $message->getId(),
+                                'content' => 'Reasoning...',
+                            ])
+                        ));
+                        break;
+
+                    case '[TOOL_CALLS]':
+                        $this->hub->publish(new Update(
+                            'conversation#'.$message->getConversation()->getId(),
+                            $this->twig->render('conversation/waiting_agent.stream.html.twig', [
+                                'id' => $message->getId(),
+                                'content' => 'Searching for document...',
+                            ])
+                        ));
+                        break;
+
+                    default:
+                        $response .= $word;
+                        $this->hub->publish(new Update(
+                            'conversation#'.$message->getConversation()->getId(),
+                            $this->twig->render('conversation/agent_response.stream.html.twig', [
+                                'id' => $message->getId(),
+                                'content' => $response,
+                            ])
+                        ));
+                        break;
+                }
+            }
         } catch (\Throwable $e) {
             $error = true;
-            $message->setContent('An error occurred: '.$e->getMessage());
+            $response = 'An error occurred: '.$e->getMessage();
+            $this->hub->publish(new Update(
+                'conversation#'.$message->getConversation()->getId(),
+                $this->twig->render('conversation/agent_response.stream.html.twig', [
+                    'id' => $message->getId(),
+                    'content' => $response,
+                ])
+            ));
         }
 
         $message->setCreatedAt(new \DateTime());
+        $message->setContent($response);
         $this->entityManager->flush();
 
         $this->eventDispatcher->dispatch(new AgentResponseEvent($message->getContent(), $message->getConversation(), $error), Events::AGENT_RESPONSE);
-        $this->hub->publish(new Update(
-            'conversation#'.$message->getConversation()->getId(),
-            $this->twig->render('conversation/message.stream.html.twig', ['message' => $message])
-        ));
     }
 }

@@ -1,3 +1,7 @@
-<twig:Turbo:Stream:Replace target="#header-title">
+<twig:Turbo:Stream:Update target="#header-title">
     {{ conversation.name }}
-</twig:Turbo:Stream:Replace>
+</twig:Turbo:Stream:Update>
+
+<twig:Turbo:Stream:Update target="#conversation-name-{{ conversation.id }}">
+    {{ conversation.name }}
+</twig:Turbo:Stream:Update>

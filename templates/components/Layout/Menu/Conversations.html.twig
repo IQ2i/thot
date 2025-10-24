@@ -26,7 +26,7 @@
                                 'bg-gray-100 dark:bg-white/5': conversation.active,
                                 'hover:bg-gray-100 dark:hover:bg-white/5': not conversation.active,
                             }) }}">
-                                <a href="{{ path('app_conversation_detail', {id: conversation.id}) }}" class="{{ html_classes('block rounded-md py-2 pr-2 pl-9 text-sm/6 text-gray-700 dark:text-gray-400 truncate', {
+                                <a href="{{ path('app_conversation_detail', {id: conversation.id}) }}" id="conversation-name-{{ conversation.id }}" class="{{ html_classes('block rounded-md py-2 pr-2 pl-9 text-sm/6 text-gray-700 dark:text-gray-400 truncate', {
                                     'text-indigo-600 dark:text-white': conversation.active,
                                     'text-gray-700 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white': not conversation.active,
                                 }) }}">

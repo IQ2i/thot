@@ -1,5 +1,5 @@
-<div class="flex flex-col w-full min-h-full max-w-7xl mx-auto px-4 pt-12 pb-6 sm:px-6 lg:px-8" {{ attributes.defaults(stimulus_controller('feed')) }}>
-    <div class="flex grow flex-col items-end gap-y-10 mb-10 overflow-hidden lg:w-3xl lg:mx-auto" data-feed-target="messages" data-skip-morph>
+<div class="flex flex-col w-full h-full max-w-7xl mx-auto px-4 pt-12 sm:px-6 lg:px-8" {{ attributes.defaults(stimulus_controller('feed')) }}>
+    <div class="flex grow flex-col items-end gap-y-10 mb-10 lg:w-3xl lg:mx-auto" data-feed-target="messages" data-skip-morph>
         {% for message in conversation.messages %}
             {% if message.type == enum('App\\Enum\\MessageType').USER %}
                 <twig:Conversation:Message:User :id="message.id" :content="message.content" :createdAt="message.createdAt" />
@@ -9,18 +9,20 @@
         {% endfor %}
     </div>
 
-    <div class="sticky bottom-6 flex mx-auto max-w-3xl w-full">
-        <form class="w-full" data-action="live#action:prevent" data-live-action-param="ask">
-            <label for="question" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">{{ 'conversation.ask_question'|trans }}</label>
-            <div class="relative">
-                <input data-model="norender|question" type="text" id="question" class="block w-full rounded-full bg-white p-4 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500" placeholder="{{ 'conversation.ask_question'|trans }}" required />
-
-                <button data-loading="addClass(opacity-50) addAttribute(disabled)" type="submit" class="absolute end-2.5 bottom-2.5 rounded-full bg-indigo-600 p-2 text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500">
-                    <svg class="size-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                    </svg>
-                </button>
-            </div>
-        </form>
+    <div class="sticky bottom-0 left-0 right-0 pt-8 -mt-8">
+        <div class="absolute inset-0 top-1/2 bg-white dark:bg-gray-900"></div>
+        <div class="relative flex mx-auto max-w-3xl w-full pb-6">
+            <form class="w-full" data-action="live#action:prevent" data-live-action-param="ask">
+                <label for="question" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">{{ 'conversation.ask_question'|trans }}</label>
+                <div class="relative">
+                    <input data-model="norender|question" type="text" id="question" class="block w-full rounded-full bg-white p-4 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-gray-700 dark:text-white dark:outline-white/10 dark:placeholder:text-white dark:focus:outline-indigo-500" placeholder="{{ 'conversation.ask_question'|trans }}" required />
+                    <button data-loading="addClass(opacity-50) addAttribute(disabled)" type="submit" class="absolute end-2.5 bottom-2.5 rounded-full bg-indigo-600 p-2 text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500">
+                        <svg class="size-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

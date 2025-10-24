@@ -10,7 +10,7 @@ export default class extends Controller {
     });
 
     connect() {
-        this.observer.observe(this.messagesTarget, {childList: true})
+        this.observer.observe(this.messagesTarget, {childList: true, subtree: true})
         this.scrollToBottom();
     }
 
@@ -19,8 +19,9 @@ export default class extends Controller {
     }
 
     scrollToBottom() {
-        window.scrollTo({
-            top: this.messagesTarget.scrollHeight,
-        });
+        const lastMessage = this.messagesTarget.lastElementChild;
+        if (lastMessage) {
+            lastMessage.scrollIntoView({ block: 'start' });
+        }
     }
 }

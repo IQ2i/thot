@@ -34,7 +34,10 @@ ENV MERCURE_TRANSPORT_URL=bolt:///data/mercure.db
 ENV PHP_INI_SCAN_DIR=":$PHP_INI_DIR/app.conf.d"
 
 COPY --link .infrastructure/frankenphp/conf.d/10-app.ini $PHP_INI_DIR/app.conf.d/
+COPY --link --chmod=755 .infrastructure/frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 COPY --link .infrastructure/frankenphp/Caddyfile /etc/frankenphp/Caddyfile
+
+ENTRYPOINT ["docker-entrypoint"]
 
 HEALTHCHECK --start-period=60s CMD curl -f http://localhost:2019/metrics || exit 1
 CMD [ "frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile" ]

@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * @extends AbstractType<Gitlab>
@@ -21,11 +22,15 @@ class GitlabType extends AbstractType
         $builder
             ->add('projectUrl', UrlType::class, [
                 'label' => 'form.gitlab_project_url',
-                'required' => false,
+                'constraints' => [
+                    new NotBlank(),
+                ],
             ])
             ->add('accessToken', TextType::class, [
                 'label' => 'form.gitlab_access_token',
-                'required' => false,
+                'constraints' => [
+                    new NotBlank(),
+                ],
             ])
         ;
     }

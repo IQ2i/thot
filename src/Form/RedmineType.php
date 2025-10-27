@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * @extends AbstractType<Redmine>
@@ -21,11 +22,15 @@ class RedmineType extends AbstractType
         $builder
             ->add('projectUrl', UrlType::class, [
                 'label' => 'form.redmine_project_url',
-                'required' => false,
+                'constraints' => [
+                    new NotBlank(),
+                ],
             ])
             ->add('accessToken', TextType::class, [
                 'label' => 'form.redmine_access_token',
-                'required' => false,
+                'constraints' => [
+                    new NotBlank(),
+                ],
             ])
         ;
     }

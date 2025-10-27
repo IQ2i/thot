@@ -7,6 +7,7 @@ use App\Entity\Message;
 use App\Enum\MessageType;
 use App\Event\UserAskEvent;
 use App\Events;
+use App\Message\GenerateTitleMessage;
 use App\Message\UserQuestionMessage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -33,7 +34,13 @@ class Feed
     #[LiveAction]
     public function ask(EntityManagerInterface $entityManager, MessageBusInterface $bus, EventDispatcherInterface $eventDispatcher, LocaleSwitcher $localeSwitcher): void
     {
-        $firstMessage = $this->conversation->getMessages()->isEmpty();
+        if ($this->conversation->getMessages()->isEmpty()) {
+            $bus->dispatch(new GenerateTitleMessage(
+                locale: $localeSwitcher->getLocale(),
+                question: $this->question,
+                conversationId: $this->conversation->getId(),
+            ));
+        }
 
         $userMessage = new Message()
             ->setType(MessageType::USER)
@@ -52,7 +59,6 @@ class Feed
             locale: $localeSwitcher->getLocale(),
             question: $this->question,
             messageId: $assistantMessage->getId(),
-            firstMessage: $firstMessage,
         ));
 
         $this->question = null;

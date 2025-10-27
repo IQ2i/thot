@@ -37,20 +37,6 @@ final readonly class UserQuestionHandler
 
         $message = $this->entityManager->find(Message::class, $userQuestion->messageId);
 
-        if ($userQuestion->firstMessage) {
-            try {
-                $result = $this->aiManager->generateConversationName($userQuestion->question);
-                $name = $result->getContent();
-                $message->getConversation()->setName($name);
-
-                $this->hub->publish(new Update(
-                    'conversation#'.$message->getConversation()->getId(),
-                    $this->twig->render('conversation/name.stream.html.twig', ['conversation' => $message->getConversation()])
-                ));
-            } catch (\Throwable) {
-            }
-        }
-
         $error = false;
         try {
             $response = '';

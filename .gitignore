@@ -1,4 +1,5 @@
 ###> app ###
+/.claude/*
 /credentials/*
 !/credentials/.gitignore
 ###< app ###

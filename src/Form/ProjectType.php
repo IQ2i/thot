@@ -44,6 +44,9 @@ class ProjectType extends AbstractType
             ->add('sources', LiveCollectionType::class, [
                 'label' => false,
                 'entry_type' => SourceType::class,
+                'button_add_options' => [
+                    'label' => 'action.add',
+                ],
             ])
         ;
     }

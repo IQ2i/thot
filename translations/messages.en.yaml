@@ -9,6 +9,7 @@ auth:
 
 # Common actions
 action:
+  add: 'Add'
   new: 'New'
   edit: 'Edit'
   delete: 'Delete'

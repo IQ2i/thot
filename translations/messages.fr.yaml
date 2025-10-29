@@ -9,6 +9,7 @@ auth:
 
 # Actions communes
 action:
+  add: 'Ajouter'
   new: 'Nouveau'
   edit: 'Modifier'
   delete: 'Supprimer'

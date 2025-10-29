@@ -55,14 +55,31 @@ readonly class GoogleDocBridge implements BridgeInterface
 
         if (null === $document) {
             try {
-                $googleDoc = $this->createDocApiClient()->documents->get($documentId);
+                // Request document with tabs content included
+                $googleDoc = $this->createDocApiClient()->documents->get($documentId, [
+                    'includeTabsContent' => true,
+                ]);
             } catch (Exception) {
                 return;
             }
 
             $content = '';
+
+            // Extract content from main body
             if ($googleDoc->getBody() && $googleDoc->getBody()->getContent()) {
                 $content = $this->extractPlainText($googleDoc->getBody()->getContent());
+            }
+
+            // Extract content from tabs if any
+            $tabs = $googleDoc->getTabs();
+            if ($tabs) {
+                $content .= $this->extractTabsContent($tabs);
+            }
+
+            // Extract footnotes if any
+            $footnotes = $googleDoc->getFootnotes();
+            if ($footnotes) {
+                $content .= $this->extractFootnotes($footnotes);
             }
 
             $webUrl = "https://docs.google.com/document/d/{$documentId}";
@@ -86,11 +103,28 @@ readonly class GoogleDocBridge implements BridgeInterface
     {
         $documents = $this->entityManager->getRepository(Document::class)->findToUpdate($source);
         foreach ($documents as $document) {
-            $googleDoc = $this->createDocApiClient()->documents->get($document->getExternalId());
+            // Request document with tabs content included
+            $googleDoc = $this->createDocApiClient()->documents->get($document->getExternalId(), [
+                'includeTabsContent' => true,
+            ]);
 
             $content = '';
+
+            // Extract content from main body
             if ($googleDoc->getBody() && $googleDoc->getBody()->getContent()) {
                 $content = $this->extractPlainText($googleDoc->getBody()->getContent());
+            }
+
+            // Extract content from tabs if any
+            $tabs = $googleDoc->getTabs();
+            if ($tabs) {
+                $content .= $this->extractTabsContent($tabs);
+            }
+
+            // Extract footnotes if any
+            $footnotes = $googleDoc->getFootnotes();
+            if ($footnotes) {
+                $content .= $this->extractFootnotes($footnotes);
             }
 
             $document
@@ -232,13 +266,50 @@ readonly class GoogleDocBridge implements BridgeInterface
     {
         $text = '';
 
+        // Handle bullet points
+        $bullet = $paragraph->getBullet();
+
+        // Get nesting level for indentation
+        $nestingLevel = $bullet->getNestingLevel();
+        $indent = str_repeat('  ', $nestingLevel);
+
+        // Determine bullet style
+        $listId = $bullet->getListId();
+        if ($listId) {
+            $text .= $indent.'• ';
+        }
+
         if ($paragraph->getElements()) {
             foreach ($paragraph->getElements() as $element) {
                 /** @var Docs\TextRun|bool|null $textRun */
                 $textRun = $element->getTextRun();
 
+                /** @var Docs\InlineObjectElement|bool|null $inlineObject */
+                $inlineObject = $element->getInlineObjectElement();
+
+                /** @var Docs\FootnoteReference|bool|null $footnoteRef */
+                $footnoteRef = $element->getFootnoteReference();
+
+                /** @var Docs\Equation|bool|null $equation */
+                $equation = $element->getEquation();
+
+                /** @var Docs\HorizontalRule|bool|null $horizontalRule */
+                $horizontalRule = $element->getHorizontalRule();
+
                 if ($textRun) {
                     $text .= $element->getTextRun()->getContent();
+                } elseif ($footnoteRef) {
+                    // Extract footnote content if available
+                    $footnoteId = $footnoteRef->getFootnoteId();
+                    $text .= " [footnote: $footnoteId]";
+                } elseif ($equation) {
+                    // For equations, we can't get the LaTeX but we note their presence
+                    $text .= ' [equation] ';
+                } elseif ($inlineObject) {
+                    // Note inline objects like images
+                    $text .= ' [inline object] ';
+                } elseif ($horizontalRule) {
+                    $text .= "\n---\n";
                 }
             }
         }
@@ -258,6 +329,64 @@ readonly class GoogleDocBridge implements BridgeInterface
                     }
                     $text .= "\n";
                 }
+            }
+        }
+
+        return $text;
+    }
+
+    /**
+     * @param Docs\Tab[] $tabs
+     */
+    private function extractTabsContent(array $tabs, int $level = 0): string
+    {
+        if (empty($tabs)) {
+            return '';
+        }
+
+        $text = '';
+
+        foreach ($tabs as $tab) {
+            // Get tab properties
+            $tabProperties = $tab->getTabProperties();
+            $tabTitle = $tabProperties->getTitle();
+
+            // Add tab separator with indentation based on level
+            $indent = str_repeat('#', $level + 2);
+            $text .= "\n\n$indent Tab: $tabTitle\n\n";
+
+            // Extract tab content if it's a document tab
+            $documentTab = $tab->getDocumentTab();
+            if ($documentTab->getBody()->getContent()) {
+                $text .= $this->extractPlainText($documentTab->getBody()->getContent());
+            }
+
+            // Recursively extract child tabs
+            $childTabs = $tab->getChildTabs();
+            if ($childTabs) {
+                $text .= $this->extractTabsContent($childTabs, $level + 1);
+            }
+        }
+
+        return $text;
+    }
+
+    /**
+     * @param array<string, Docs\Footnote> $footnotes
+     */
+    private function extractFootnotes(array $footnotes): string
+    {
+        if (empty($footnotes)) {
+            return '';
+        }
+
+        $text = "\n\n--- Footnotes ---\n";
+
+        foreach ($footnotes as $footnoteId => $footnote) {
+            $text .= "\n[$footnoteId]: ";
+            if ($footnote->getContent()) {
+                $footnoteContent = $this->extractPlainText($footnote->getContent());
+                $text .= mb_trim($footnoteContent);
             }
         }
 

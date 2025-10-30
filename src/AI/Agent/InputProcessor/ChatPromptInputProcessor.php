@@ -2,6 +2,7 @@
 
 namespace App\AI\Agent\InputProcessor;
 
+use App\Entity\Project;
 use Symfony\AI\Agent\Input;
 use Symfony\AI\Agent\InputProcessorInterface;
 use Symfony\AI\Agent\Toolbox\ToolboxInterface;
@@ -12,6 +13,7 @@ readonly class ChatPromptInputProcessor implements InputProcessorInterface
 {
     public function __construct(
         private ToolboxInterface $toolbox,
+        private Project $project,
     ) {
     }
 
@@ -115,6 +117,9 @@ readonly class ChatPromptInputProcessor implements InputProcessorInterface
             - [Document 1](url) • Date
             - [Document 2](url) • Date
             ```
+
+            # Project
+            {$this->project}
 
             # Functions
             {$tools}

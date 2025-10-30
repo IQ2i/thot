@@ -86,7 +86,7 @@ readonly class AiManager
 
     public function ask(Conversation $conversation): ResultInterface
     {
-        $promptProcessor = new ChatPromptInputProcessor($this->getToolbox());
+        $promptProcessor = new ChatPromptInputProcessor($this->getToolbox(), $conversation->getProject());
         $agentProcessor = new AgentProcessor($this->getToolbox());
 
         $agent = new Agent($this->getPlatform(), self::CHAT_MODEL, [$promptProcessor, $agentProcessor], [$agentProcessor]);

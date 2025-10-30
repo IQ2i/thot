@@ -47,6 +47,10 @@ final readonly class Store implements ManagedStoreInterface, StoreInterface
 
     public function add(VectorDocument ...$documents): void
     {
+        $this->request('POST', \sprintf('indexes/%s/documents/delete', $this->indexName), [
+            'filter' => implode(' AND ', array_map($this->generateFilterByParentId(...), $documents)),
+        ]);
+
         $this->request('PUT', \sprintf('indexes/%s/documents', $this->indexName), array_map(
             $this->convertToIndexableArray(...), $documents)
         );
@@ -61,7 +65,7 @@ final readonly class Store implements ManagedStoreInterface, StoreInterface
             'retrieveVectors' => true,
             'hybrid' => [
                 'embedder' => $this->embedder,
-                'semanticRatio' => $options['semanticRatio'] ?? 1.0,
+                'semanticRatio' => $options['semanticRatio'] ?? 0.5,
             ],
         ];
 
@@ -99,6 +103,13 @@ final readonly class Store implements ManagedStoreInterface, StoreInterface
         ]);
 
         return $result->toArray();
+    }
+
+    private function generateFilterByParentId(VectorDocument $document): string
+    {
+        $data = $document->metadata->getArrayCopy();
+
+        return 'parent_id = '.$data['parent_id'];
     }
 
     /**

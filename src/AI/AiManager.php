@@ -52,7 +52,7 @@ readonly class AiManager
 
         $store->drop();
         $store->setup([
-            'filterable_attributes' => ['project', 'closed'],
+            'filterable_attributes' => ['project', 'closed', 'parent_id'],
             'sortableAttributes' => ['createdAt'],
         ]);
     }

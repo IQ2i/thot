@@ -57,8 +57,9 @@ class IndexDocumentCommand extends Command
                         id: Uuid::v4(),
                         content: $content,
                         metadata: new Metadata([
+                            'parent_id' => $document->getId(),
                             'title' => $document->getTitle(),
-                            'content' => $document->getContent(),
+                            'content' => $chunk,
                             'source' => $document->getSource()->getType()->value,
                             'project' => $project->getId(),
                             'closed' => $document->isClosed(),

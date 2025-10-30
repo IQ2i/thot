@@ -53,49 +53,38 @@ readonly class GoogleDocBridge implements BridgeInterface
             'externalId' => $documentId,
         ]);
 
-        if (null === $document) {
-            try {
-                // Request document with tabs content included
-                $googleDoc = $this->createDocApiClient()->documents->get($documentId, [
-                    'includeTabsContent' => true,
-                ]);
-            } catch (Exception) {
+        $metadata = $this->getFileMetadata($documentId);
+        if (null !== $document) {
+            if ($document->getUpdatedAt() >= $metadata['modifiedTime']) {
                 return;
             }
 
-            $content = '';
+            $this->updateSingleDocument($document, $documentId, $metadata);
 
-            // Extract content from main body
-            if ($googleDoc->getBody() && $googleDoc->getBody()->getContent()) {
-                $content = $this->extractPlainText($googleDoc->getBody()->getContent());
-            }
-
-            // Extract content from tabs if any
-            $tabs = $googleDoc->getTabs();
-            if ($tabs) {
-                $content .= $this->extractTabsContent($tabs);
-            }
-
-            // Extract footnotes if any
-            $footnotes = $googleDoc->getFootnotes();
-            if ($footnotes) {
-                $content .= $this->extractFootnotes($footnotes);
-            }
-
-            $webUrl = "https://docs.google.com/document/d/{$documentId}";
-            $metadata = $this->getFileMetadata($documentId);
-
-            $document = new Document()
-                ->setSource($source)
-                ->setExternalId($documentId)
-                ->setTitle($googleDoc->getTitle())
-                ->setContent(MarkdownCleaner::clean($content))
-                ->setWebUrl($webUrl)
-                ->setCreatedAt($metadata['createdTime'])
-                ->setUpdatedAt($metadata['modifiedTime'])
-                ->setSyncedAt(new \DateTime());
-            $this->entityManager->persist($document);
+            return;
         }
+
+        try {
+            $googleDoc = $this->createDocApiClient()->documents->get($documentId, [
+                'includeTabsContent' => true,
+            ]);
+        } catch (Exception) {
+            return;
+        }
+
+        $content = $this->extractDocumentContent($googleDoc);
+        $webUrl = "https://docs.google.com/document/d/{$documentId}";
+
+        $document = new Document()
+            ->setSource($source)
+            ->setExternalId($documentId)
+            ->setTitle($googleDoc->getTitle())
+            ->setContent(MarkdownCleaner::clean($content))
+            ->setWebUrl($webUrl)
+            ->setCreatedAt($metadata['createdTime'])
+            ->setUpdatedAt($metadata['modifiedTime'])
+            ->setSyncedAt(new \DateTime());
+        $this->entityManager->persist($document);
     }
 
     /**
@@ -105,40 +94,59 @@ readonly class GoogleDocBridge implements BridgeInterface
     {
         $documents = $this->entityManager->getRepository(Document::class)->findToUpdate($source);
         foreach ($documents as $document) {
-            // Request document with tabs content included
-            $googleDoc = $this->createDocApiClient()->documents->get($document->getExternalId(), [
-                'includeTabsContent' => true,
-            ]);
-
-            $content = '';
-
-            // Extract content from main body
-            if ($googleDoc->getBody() && $googleDoc->getBody()->getContent()) {
-                $content = $this->extractPlainText($googleDoc->getBody()->getContent());
-            }
-
-            // Extract content from tabs if any
-            $tabs = $googleDoc->getTabs();
-            if ($tabs) {
-                $content .= $this->extractTabsContent($tabs);
-            }
-
-            // Extract footnotes if any
-            $footnotes = $googleDoc->getFootnotes();
-            if ($footnotes) {
-                $content .= $this->extractFootnotes($footnotes);
-            }
-
             $metadata = $this->getFileMetadata($document->getExternalId());
+            if ($document->getUpdatedAt() >= $metadata['modifiedTime']) {
+                continue;
+            }
 
-            $document
-                ->setTitle($googleDoc->getTitle())
-                ->setContent(MarkdownCleaner::clean($content))
-                ->setUpdatedAt($metadata['modifiedTime'])
-                ->setSyncedAt(new \DateTime());
+            $this->updateSingleDocument($document, $document->getExternalId(), $metadata);
         }
 
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param array{createdTime: \DateTime, modifiedTime: \DateTime} $metadata
+     */
+    private function updateSingleDocument(Document $document, string $documentId, array $metadata): void
+    {
+        try {
+            // Request document with tabs content included
+            $googleDoc = $this->createDocApiClient()->documents->get($documentId, [
+                'includeTabsContent' => true,
+            ]);
+        } catch (Exception) {
+            return;
+        }
+
+        $content = $this->extractDocumentContent($googleDoc);
+
+        $document
+            ->setTitle($googleDoc->getTitle())
+            ->setContent(MarkdownCleaner::clean($content))
+            ->setUpdatedAt($metadata['modifiedTime'])
+            ->setSyncedAt(new \DateTime());
+    }
+
+    private function extractDocumentContent(Docs\Document $googleDoc): string
+    {
+        $content = '';
+
+        if ($googleDoc->getBody() && $googleDoc->getBody()->getContent()) { /* @phpstan-ignore booleanAnd.leftAlwaysTrue */
+            $content = $this->extractPlainText($googleDoc->getBody()->getContent());
+        }
+
+        $tabs = $googleDoc->getTabs();
+        if ($tabs) {
+            $content .= $this->extractTabsContent($tabs);
+        }
+
+        $footnotes = $googleDoc->getFootnotes();
+        if ($footnotes) {
+            $content .= $this->extractFootnotes($footnotes);
+        }
+
+        return $content;
     }
 
     private function createDocApiClient(): Docs

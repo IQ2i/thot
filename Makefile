@@ -2,7 +2,7 @@
 DOCKER_COMP = docker compose
 
 # Docker containers
-PHP_CONT  = $(DOCKER_COMP) run --rm -w /app php
+PHP_CONT  = $(DOCKER_COMP) exec -w /app php
 
 # Executables
 PHP      = $(PHP_CONT) php

@@ -21,3 +21,11 @@ services:
 
     League\CommonMark\Extension\Table\TableExtension:
         tags: [ 'twig.markdown.league_extension' ]
+
+    League\CommonMark\Extension\ExternalLink\ExternalLinkExtension:
+        tags: [ 'twig.markdown.league_extension' ]
+
+    twig.markdown.league_common_mark_converter_factory:
+        class: App\Twig\LeagueCommonMarkConverterFactory
+        arguments:
+            - !tagged_iterator twig.markdown.league_extension

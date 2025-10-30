@@ -45,11 +45,12 @@ readonly class GitlabBridge implements BridgeInterface
                 ]);
 
                 if (null === $document) {
+                    $content = $this->buildIssueContent($source, $issue);
                     $document = new Document()
                         ->setSource($source)
                         ->setExternalId($issue['iid'])
                         ->setTitle($issue['title'])
-                        ->setContent(MarkdownCleaner::clean($issue['description'] ?? ''))
+                        ->setContent(MarkdownCleaner::clean($content))
                         ->setWebUrl($issue['web_url'])
                         ->setCreatedAt(new \DateTime($issue['created_at']))
                         ->setClosed('closed' === $issue['state'])
@@ -121,9 +122,10 @@ readonly class GitlabBridge implements BridgeInterface
                     'externalId' => $issue['iid'],
                 ]);
 
+                $content = $this->buildIssueContent($source, $issue);
                 $document
                     ->setTitle($issue['title'])
-                    ->setContent(MarkdownCleaner::clean($issue['description'] ?? ''))
+                    ->setContent(MarkdownCleaner::clean($content))
                     ->setClosed('closed' === $issue['state'])
                     ->setSyncedAt(new \DateTime());
             }
@@ -192,6 +194,43 @@ readonly class GitlabBridge implements BridgeInterface
         }
 
         return $response->toArray(false);
+    }
+
+    /**
+     * @param Gitlab               $source
+     * @param array<string, mixed> $issue
+     */
+    private function buildIssueContent(Source $source, array $issue): string
+    {
+        $description = $issue['description'] ?? '';
+
+        if (isset($issue['author']['name'])) {
+            $description = "**Auteur:** {$issue['author']['name']}\n\n{$description}";
+        }
+
+        $notes = $this->request($source, "issues/{$issue['iid']}/notes", ['sort' => 'asc', 'per_page' => 100]);
+
+        if (!empty($notes)) {
+            $notesContent = array_map(function (array $note): ?string {
+                // Ignorer les notes système
+                if (isset($note['system']) && true === $note['system']) {
+                    return null;
+                }
+
+                if (empty($note['body'])) {
+                    return null;
+                }
+
+                $author = $note['author']['name'] ?? 'Utilisateur inconnu';
+                $createdAt = isset($note['created_at']) ? (new \DateTime($note['created_at']))->format('Y-m-d H:i') : '';
+
+                return "\n\n---\n**Note de {$author}** ({$createdAt}):\n{$note['body']}";
+            }, $notes);
+
+            $description .= implode('', array_filter($notesContent));
+        }
+
+        return $description;
     }
 
     /**

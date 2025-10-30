@@ -122,10 +122,27 @@ readonly class RedmineBridge implements BridgeInterface
                 $data = $response->toArray(false);
                 $data = $data['issue'] ?? [];
 
+                $description = $data['description'] ?? '';
+                if (isset($data['author']['name'])) {
+                    $description = "**Auteur:** {$data['author']['name']}\n\n{$description}";
+                }
+
+                $journalNotes = array_map(function (array $journal): ?string {
+                    if (empty($journal['notes'])) {
+                        return null;
+                    }
+                    $author = $journal['user']['name'] ?? 'Utilisateur inconnu';
+                    $createdOn = isset($journal['created_on']) ? (new \DateTime($journal['created_on']))->format('Y-m-d H:i') : '';
+
+                    return "\n\n---\n**Note de {$author}** ({$createdOn}):\n{$journal['notes']}";
+                }, $data['journals'] ?? []);
+
+                $description .= implode('', array_filter($journalNotes));
+
                 $issues[] = [
                     'id' => $data['id'],
                     'subject' => $data['subject'],
-                    'description' => $data['description'].implode("\n", array_map(fn (array $journal): ?string => $journal['notes'], $data['journals'] ?? [])),
+                    'description' => $description,
                     'created_on' => $data['created_on'],
                     'closed_on' => $data['closed_on'],
                 ];

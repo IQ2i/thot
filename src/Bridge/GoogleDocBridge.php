@@ -91,7 +91,7 @@ readonly class GoogleDocBridge implements BridgeInterface
                 ->setTitle($googleDoc->getTitle())
                 ->setContent(MarkdownCleaner::clean($content))
                 ->setWebUrl($webUrl)
-                ->setCreatedAt($metadata['createdTime'] ?? new \DateTime())
+                ->setCreatedAt($metadata['createdTime'])
                 ->setUpdatedAt($metadata['modifiedTime'])
                 ->setSyncedAt(new \DateTime());
             $this->entityManager->persist($document);
@@ -173,7 +173,7 @@ readonly class GoogleDocBridge implements BridgeInterface
     }
 
     /**
-     * @return array{createdTime: ?\DateTime, modifiedTime: ?\DateTime}
+     * @return array{createdTime: \DateTime, modifiedTime: \DateTime}
      */
     private function getFileMetadata(string $id): array
     {
@@ -184,13 +184,13 @@ readonly class GoogleDocBridge implements BridgeInterface
             $modifiedTime = $file->getModifiedTime();
 
             return [
-                'createdTime' => $createdTime ? new \DateTime($createdTime) : null,
-                'modifiedTime' => $modifiedTime ? new \DateTime($modifiedTime) : null,
+                'createdTime' => $createdTime ? new \DateTime($createdTime) : new \DateTime(),
+                'modifiedTime' => $modifiedTime ? new \DateTime($modifiedTime) : new \DateTime(),
             ];
         } catch (\Exception) {
             return [
-                'createdTime' => null,
-                'modifiedTime' => null,
+                'createdTime' => new \DateTime(),
+                'modifiedTime' => new \DateTime(),
             ];
         }
     }
@@ -269,20 +269,11 @@ readonly class GoogleDocBridge implements BridgeInterface
         $text = '';
 
         foreach ($elements as $element) {
-            /** @var Docs\Paragraph|bool|null $paragraph */
-            $paragraph = $element->getParagraph();
-
-            /** @var Docs\Table|bool|null $table */
-            $table = $element->getTable();
-
-            /** @var Docs\Table|bool|null $tableOfContents */
-            $tableOfContents = $element->getTableOfContents();
-
-            if ($paragraph) {
+            if ($element->getParagraph() instanceof Docs\Paragraph) { /* @phpstan-ignore instanceof.alwaysTrue */
                 $text .= $this->extractParagraphPlainText($element->getParagraph());
-            } elseif ($table) {
+            } elseif ($element->getTable() instanceof Docs\Table) { /* @phpstan-ignore instanceof.alwaysTrue */
                 $text .= $this->extractTablePlainText($element->getTable());
-            } elseif ($tableOfContents) {
+            } elseif ($element->getTableOfContents() instanceof Docs\TableOfContents && $element->getTableOfContents()->getContent()) { /* @phpstan-ignore instanceof.alwaysTrue */
                 $text .= $this->extractPlainText($element->getTableOfContents()->getContent());
             }
         }
@@ -294,49 +285,30 @@ readonly class GoogleDocBridge implements BridgeInterface
     {
         $text = '';
 
-        // Handle bullet points
-        $bullet = $paragraph->getBullet();
+        if ($paragraph->getBullet() instanceof Docs\Bullet) { /* @phpstan-ignore instanceof.alwaysTrue */
+            // Get nesting level for indentation
+            $nestingLevel = $paragraph->getBullet()->getNestingLevel();
+            $indent = str_repeat('  ', $nestingLevel);
 
-        // Get nesting level for indentation
-        $nestingLevel = $bullet->getNestingLevel();
-        $indent = str_repeat('  ', $nestingLevel);
-
-        // Determine bullet style
-        $listId = $bullet->getListId();
-        if ($listId) {
-            $text .= $indent.'• ';
+            // Determine bullet style
+            $listId = $paragraph->getBullet()->getListId();
+            if ($listId) {
+                $text .= $indent.'• ';
+            }
         }
 
         if ($paragraph->getElements()) {
             foreach ($paragraph->getElements() as $element) {
-                /** @var Docs\TextRun|bool|null $textRun */
-                $textRun = $element->getTextRun();
-
-                /** @var Docs\InlineObjectElement|bool|null $inlineObject */
-                $inlineObject = $element->getInlineObjectElement();
-
-                /** @var Docs\FootnoteReference|bool|null $footnoteRef */
-                $footnoteRef = $element->getFootnoteReference();
-
-                /** @var Docs\Equation|bool|null $equation */
-                $equation = $element->getEquation();
-
-                /** @var Docs\HorizontalRule|bool|null $horizontalRule */
-                $horizontalRule = $element->getHorizontalRule();
-
-                if ($textRun) {
+                if ($element->getTextRun() instanceof Docs\TextRun) { /* @phpstan-ignore instanceof.alwaysTrue */
                     $text .= $element->getTextRun()->getContent();
-                } elseif ($footnoteRef) {
-                    // Extract footnote content if available
-                    $footnoteId = $footnoteRef->getFootnoteId();
+                } elseif ($element->getFootnoteReference() instanceof Docs\FootnoteReference) { /* @phpstan-ignore instanceof.alwaysTrue */
+                    $footnoteId = $element->getFootnoteReference()->getFootnoteId();
                     $text .= " [footnote: $footnoteId]";
-                } elseif ($equation) {
-                    // For equations, we can't get the LaTeX but we note their presence
+                } elseif ($element->getEquation() instanceof Docs\Equation) { /* @phpstan-ignore instanceof.alwaysTrue */
                     $text .= ' [equation] ';
-                } elseif ($inlineObject) {
-                    // Note inline objects like images
+                } elseif ($element->getInlineObjectElement() instanceof Docs\InlineObjectElement) { /* @phpstan-ignore instanceof.alwaysTrue */
                     $text .= ' [inline object] ';
-                } elseif ($horizontalRule) {
+                } elseif ($element->getHorizontalRule() instanceof Docs\HorizontalRule) {
                     $text .= "\n---\n";
                 }
             }
@@ -383,9 +355,8 @@ readonly class GoogleDocBridge implements BridgeInterface
             $indent = str_repeat('#', $level + 2);
             $text .= "\n\n$indent Tab: $tabTitle\n\n";
 
-            // Extract tab content if it's a document tab
             $documentTab = $tab->getDocumentTab();
-            if ($documentTab->getBody()->getContent()) {
+            if ($documentTab && $documentTab->getBody() && $documentTab->getBody()->getContent()) {  /* @phpstan-ignore booleanAnd.rightAlwaysTrue, booleanAnd.leftAlwaysTrue */
                 $text .= $this->extractPlainText($documentTab->getBody()->getContent());
             }
 

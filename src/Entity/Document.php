@@ -29,6 +29,9 @@ class Document
     #[ORM\Column(nullable: true)]
     private ?\DateTime $createdAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $updatedAt = null;
+
     #[ORM\Column]
     private bool $closed = false;
 
@@ -103,6 +106,18 @@ class Document
     public function setCreatedAt(?\DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTime $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

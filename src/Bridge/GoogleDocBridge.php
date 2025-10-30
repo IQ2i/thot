@@ -83,6 +83,7 @@ readonly class GoogleDocBridge implements BridgeInterface
             }
 
             $webUrl = "https://docs.google.com/document/d/{$documentId}";
+            $metadata = $this->getFileMetadata($documentId);
 
             $document = new Document()
                 ->setSource($source)
@@ -90,7 +91,8 @@ readonly class GoogleDocBridge implements BridgeInterface
                 ->setTitle($googleDoc->getTitle())
                 ->setContent(MarkdownCleaner::clean($content))
                 ->setWebUrl($webUrl)
-                ->setCreatedAt(new \DateTime())
+                ->setCreatedAt($metadata['createdTime'] ?? new \DateTime())
+                ->setUpdatedAt($metadata['modifiedTime'])
                 ->setSyncedAt(new \DateTime());
             $this->entityManager->persist($document);
         }
@@ -127,9 +129,12 @@ readonly class GoogleDocBridge implements BridgeInterface
                 $content .= $this->extractFootnotes($footnotes);
             }
 
+            $metadata = $this->getFileMetadata($document->getExternalId());
+
             $document
                 ->setTitle($googleDoc->getTitle())
                 ->setContent(MarkdownCleaner::clean($content))
+                ->setUpdatedAt($metadata['modifiedTime'])
                 ->setSyncedAt(new \DateTime());
         }
 
@@ -164,6 +169,29 @@ readonly class GoogleDocBridge implements BridgeInterface
             return 'application/vnd.google-apps.folder' === $file->getMimeType();
         } catch (\Exception) {
             return false;
+        }
+    }
+
+    /**
+     * @return array{createdTime: ?\DateTime, modifiedTime: ?\DateTime}
+     */
+    private function getFileMetadata(string $id): array
+    {
+        try {
+            $file = $this->createDriveApiClient()->files->get($id, ['fields' => 'createdTime,modifiedTime']);
+
+            $createdTime = $file->getCreatedTime();
+            $modifiedTime = $file->getModifiedTime();
+
+            return [
+                'createdTime' => $createdTime ? new \DateTime($createdTime) : null,
+                'modifiedTime' => $modifiedTime ? new \DateTime($modifiedTime) : null,
+            ];
+        } catch (\Exception) {
+            return [
+                'createdTime' => null,
+                'modifiedTime' => null,
+            ];
         }
     }
 

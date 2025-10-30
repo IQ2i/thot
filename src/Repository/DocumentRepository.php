@@ -29,7 +29,11 @@ class DocumentRepository extends ServiceEntityRepository
 
         $qb->andWhere($qb->expr()->andX(
             $qb->expr()->eq('document.source', ':source'),
-            $qb->expr()->eq('document.closed', ':closed'),
+            $qb->expr()->orX(
+                $qb->expr()->eq('document.closed', ':closed'),
+                $qb->expr()->gt('document.updatedAt', 'document.syncedAt'),
+                $qb->expr()->isNull('document.syncedAt')
+            ),
         ))->setParameters(new ArrayCollection([
             new Parameter('source', $source),
             new Parameter('closed', false),

@@ -41,7 +41,8 @@ readonly class RedmineBridge implements BridgeInterface
                         ->setTitle($issue['subject'])
                         ->setContent(MarkdownCleaner::clean($issue['description'] ?? ''))
                         ->setWebUrl($this->getRedmineHost($source).'/issues/'.$issue['id'])
-                        ->setCreatedAt(new \DateTime($issue['created_on']));
+                        ->setCreatedAt(new \DateTime($issue['created_on']))
+                        ->setUpdatedAt(isset($issue['updated_on']) ? new \DateTime($issue['updated_on']) : null);
                     $this->entityManager->persist($document);
                 }
             }
@@ -72,6 +73,7 @@ readonly class RedmineBridge implements BridgeInterface
                 $document
                     ->setTitle($issue['subject'])
                     ->setContent(MarkdownCleaner::clean($issue['description'] ?? ''))
+                    ->setUpdatedAt(isset($issue['updated_on']) ? new \DateTime($issue['updated_on']) : null)
                     ->setClosed(isset($issue['closed_on']))
                     ->setSyncedAt(new \DateTime());
             }
@@ -144,7 +146,8 @@ readonly class RedmineBridge implements BridgeInterface
                     'subject' => $data['subject'],
                     'description' => $description,
                     'created_on' => $data['created_on'],
-                    'closed_on' => $data['closed_on'],
+                    'updated_on' => $data['updated_on'] ?? null,
+                    'closed_on' => $data['closed_on'] ?? null,
                 ];
             }
         } else {
@@ -162,7 +165,8 @@ readonly class RedmineBridge implements BridgeInterface
                 'subject' => $data['subject'],
                 'description' => $data['description'],
                 'created_on' => $data['created_on'],
-                'closed_on' => $data['closed_on'],
+                'updated_on' => $data['updated_on'] ?? null,
+                'closed_on' => $data['closed_on'] ?? null,
             ], $data['issues'] ?? []);
         }
 

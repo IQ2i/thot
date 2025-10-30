@@ -53,6 +53,7 @@ readonly class GitlabBridge implements BridgeInterface
                         ->setContent(MarkdownCleaner::clean($content))
                         ->setWebUrl($issue['web_url'])
                         ->setCreatedAt(new \DateTime($issue['created_at']))
+                        ->setUpdatedAt(isset($issue['updated_at']) ? new \DateTime($issue['updated_at']) : null)
                         ->setClosed('closed' === $issue['state'])
                         ->setSyncedAt(new \DateTime());
                     $this->entityManager->persist($document);
@@ -126,6 +127,7 @@ readonly class GitlabBridge implements BridgeInterface
                 $document
                     ->setTitle($issue['title'])
                     ->setContent(MarkdownCleaner::clean($content))
+                    ->setUpdatedAt(isset($issue['updated_at']) ? new \DateTime($issue['updated_at']) : null)
                     ->setClosed('closed' === $issue['state'])
                     ->setSyncedAt(new \DateTime());
             }

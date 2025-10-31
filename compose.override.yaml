@@ -22,13 +22,10 @@ services:
         build:
             context: .
             target: frankenphp_dev
-        command: [ 'bin/console', 'messenger:consume', 'async', '-vv', '--time-limit=30', '--limit=10', '--memory-limit=128M' ]
+        command: [ 'php', 'bin/console', 'messenger:consume', 'async', '-vv', '--time-limit=30', '--limit=10', '--memory-limit=128M' ]
         volumes:
             - ./:/app
             - /app/var/
-        depends_on:
-            php:
-                condition: service_healthy
 
     admin:
         image: adminer

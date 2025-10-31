@@ -1,14 +1,17 @@
+x-env: &env
+    SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
+    MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+    MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+    MERCURE_URL: ${CADDY_MERCURE_URL:-http://php/.well-known/mercure}
+    MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL:-https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}/.well-known/mercure}
+    MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+
 services:
     php:
         image: ${IMAGES_PREFIX:-}app-php
         restart: unless-stopped
         environment:
-            SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
-            MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-            MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-            MERCURE_URL: ${CADDY_MERCURE_URL:-http://php/.well-known/mercure}
-            MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL:-https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}/.well-known/mercure}
-            MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+            <<: *env
         volumes:
             - caddy_data:/data
             - caddy_config:/config
@@ -31,13 +34,22 @@ services:
         restart: unless-stopped
         environment:
             RUN_MIGRATIONS: false
-            SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
-            MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-            MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-            MERCURE_URL: ${CADDY_MERCURE_URL:-http://php/.well-known/mercure}
-            MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL:-https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}/.well-known/mercure}
-            MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-        command: php bin/console messenger:consume async -v
+            <<: *env
+        depends_on:
+            php:
+                condition: service_healthy
+        command: [ 'php', 'bin/console', 'messenger:consume', 'async', '-vv', '--time-limit=300', '--limit=25', '--memory-limit=512M' ]
+
+    php-scheduler:
+        image: ${IMAGES_PREFIX:-}app-php-scheduler
+        restart: unless-stopped
+        environment:
+            RUN_MIGRATIONS: false
+            <<: *env
+        depends_on:
+            php:
+                condition: service_healthy
+        command: [ 'php', 'bin/console', 'messenger:consume', 'scheduler_default', '-vv', '--time-limit=300', '--limit=25', '--memory-limit=512M' ]
 
     database:
         image: postgres:18-alpine

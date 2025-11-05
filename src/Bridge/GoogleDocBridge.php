@@ -295,7 +295,7 @@ readonly class GoogleDocBridge implements BridgeInterface
 
         if ($paragraph->getBullet() instanceof Docs\Bullet) { /* @phpstan-ignore instanceof.alwaysTrue */
             // Get nesting level for indentation
-            $nestingLevel = $paragraph->getBullet()->getNestingLevel() ?? 0;
+            $nestingLevel = $paragraph->getBullet()->getNestingLevel() ?? 0; /* @phpstan-ignore nullCoalesce.expr */
             $indent = str_repeat('  ', $nestingLevel);
 
             // Determine bullet style

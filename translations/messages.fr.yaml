@@ -16,6 +16,7 @@ action:
   save: 'Enregistrer'
   select: 'Sélectionner'
   close: 'Fermer'
+  cancel: 'Annuler'
   force_sync: 'Forcer la synchronisation'
 
 # Gestion des utilisateurs
@@ -135,3 +136,8 @@ agent:
 sr:
   edit_user: ', %username%'
   edit_project: ', %name%'
+
+# Confirmation de suppression
+delete:
+  title: 'Supprimer le contenu'
+  message: 'Êtes-vous sûr de vouloir supprimer ce contenu ? Cette action est irréversible.'

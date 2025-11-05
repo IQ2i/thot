@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Twig\Components\Layout\Menu;
+namespace App\Twig\Components\Layout;
 
 use App\Entity\Project;
 use Doctrine\ORM\EntityManagerInterface;

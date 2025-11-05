@@ -16,6 +16,7 @@ action:
   save: 'Save'
   select: 'Select'
   close: 'Close'
+  cancel: 'Cancel'
   force_sync: 'Force sync'
 
 # User management
@@ -137,3 +138,8 @@ agent:
 sr:
   edit_user: ', %username%'
   edit_project: ', %name%'
+
+# Delete confirmation
+delete:
+  title: 'Delete content'
+  message: 'Are you sure you want to delete this content? This action cannot be undone.'

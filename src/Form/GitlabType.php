@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Gitlab;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -17,6 +20,12 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  */
 class GitlabType extends AbstractType
 {
+    public function __construct(
+        #[Autowire(env: 'DEFAULT_GITLAB_ACCESS_TOKEN')]
+        private readonly ?string $defaultAccessToken = null,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -28,11 +37,18 @@ class GitlabType extends AbstractType
             ])
             ->add('accessToken', TextType::class, [
                 'label' => 'form.gitlab_access_token',
+                'disabled' => null !== $this->defaultAccessToken,
                 'constraints' => [
                     new NotBlank(),
                 ],
             ])
         ;
+
+        $builder->get('accessToken')->addEventListener(FormEvents::PRE_SET_DATA, function (PreSetDataEvent $event) {
+            if (null !== $this->defaultAccessToken) {
+                $event->setData($this->defaultAccessToken);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

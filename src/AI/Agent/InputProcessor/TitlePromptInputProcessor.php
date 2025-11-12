@@ -31,7 +31,7 @@ class TitlePromptInputProcessor implements InputProcessorInterface
 
         PROMPT;
 
-        $messages = $input->messages;
-        $input->messages = $messages->prepend(Message::forSystem($prompt));
+        $messages = $input->getMessageBag();
+        $input->setMessageBag($messages->prepend(Message::forSystem($prompt)));
     }
 }

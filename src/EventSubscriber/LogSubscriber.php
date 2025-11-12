@@ -53,7 +53,7 @@ readonly class LogSubscriber implements EventSubscriberInterface
     public function onBeforeToolCallEvent(ToolCallArgumentsResolved $event): void
     {
         $args = [];
-        foreach ($event->arguments as $name => $value) {
+        foreach ($event->getArguments() as $name => $value) {
             if (null === $value) {
                 continue;
             }
@@ -63,7 +63,7 @@ readonly class LogSubscriber implements EventSubscriberInterface
 
         $log = new Log()
             ->setLevel(LogLevel::DEBUG)
-            ->setMessage(\sprintf('Agent trying to call tool "%s" with arguments', $event->metadata->name))
+            ->setMessage(\sprintf('Agent trying to call tool "%s" with arguments', $event->getMetadata()->getName()))
             ->setAdditionalContent(implode(' + ', $args));
 
         $this->entityManager->persist($log);
@@ -74,8 +74,8 @@ readonly class LogSubscriber implements EventSubscriberInterface
     {
         $log = new Log()
             ->setLevel(LogLevel::DEBUG)
-            ->setMessage(\sprintf('Tool "%s" call succeeded', $event->metadata->name))
-            ->setAdditionalContent($event->result);
+            ->setMessage(\sprintf('Tool "%s" call succeeded', $event->getMetadata()->getName()))
+            ->setAdditionalContent($event->getResult()->getResult());
 
         $this->entityManager->persist($log);
         $this->entityManager->flush();
@@ -85,8 +85,8 @@ readonly class LogSubscriber implements EventSubscriberInterface
     {
         $log = new Log()
             ->setLevel(LogLevel::ERROR)
-            ->setMessage(\sprintf('Tool "%s" call failed', $event->metadata->name))
-            ->setAdditionalContent($event->exception->getMessage());
+            ->setMessage(\sprintf('Tool "%s" call failed', $event->getMetadata()->getName()))
+            ->setAdditionalContent($event->getException()->getMessage());
 
         $this->entityManager->persist($log);
         $this->entityManager->flush();

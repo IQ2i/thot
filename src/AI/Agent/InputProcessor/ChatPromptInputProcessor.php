@@ -21,7 +21,7 @@ readonly class ChatPromptInputProcessor implements InputProcessorInterface
     {
         $tools = implode(\PHP_EOL, array_map(
             function (Tool $tool): string {
-                $parameters = $tool->parameters;
+                $parameters = $tool->getParameters();
                 $properties = $parameters['properties'] ?? [];
 
                 $params = implode(\PHP_EOL, array_map(
@@ -33,8 +33,8 @@ readonly class ChatPromptInputProcessor implements InputProcessorInterface
                 ));
 
                 return <<<TOOL
-                    ## {$tool->name}
-                    {$tool->description}
+                    ## {$tool->getName()}
+                    {$tool->getDescription()}
                     
                     ### Parameters
                     {$params}
@@ -126,7 +126,7 @@ readonly class ChatPromptInputProcessor implements InputProcessorInterface
 
         PROMPT;
 
-        $messages = $input->messages;
-        $input->messages = $messages->prepend(Message::forSystem($prompt));
+        $messages = $input->getMessageBag();
+        $input->setMessageBag($messages->prepend(Message::forSystem($prompt)));
     }
 }

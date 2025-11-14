@@ -3,11 +3,13 @@
 namespace App\MessageHandler;
 
 use App\AI\AiManager;
+use App\Dto\Source;
 use App\Entity\Message;
 use App\Event\AgentResponseEvent;
 use App\Events;
 use App\Message\UserQuestionMessage;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\AI\Agent\Toolbox\Source\Source as AgentSource;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -39,6 +41,7 @@ final readonly class UserQuestionHandler
 
         $error = false;
         try {
+            $sources = [];
             $response = '';
             $result = $this->aiManager->ask($message->getConversation());
             foreach ($result->getContent() as $word) {
@@ -49,6 +52,7 @@ final readonly class UserQuestionHandler
                             $this->twig->render('conversation/waiting_agent.stream.html.twig', [
                                 'id' => $message->getId(),
                                 'content' => new TranslatableMessage('agent.reasoning'),
+                                'sources' => [],
                             ])
                         ));
                         break;
@@ -59,6 +63,7 @@ final readonly class UserQuestionHandler
                             $this->twig->render('conversation/waiting_agent.stream.html.twig', [
                                 'id' => $message->getId(),
                                 'content' => new TranslatableMessage('agent.searching_document'),
+                                'sources' => [],
                             ])
                         ));
                         break;
@@ -70,10 +75,27 @@ final readonly class UserQuestionHandler
                             $this->twig->render('conversation/agent_response.stream.html.twig', [
                                 'id' => $message->getId(),
                                 'content' => $response,
+                                'sources' => [],
                             ])
                         ));
                         break;
                 }
+            }
+
+            if ($result->getMetadata()->has('sources')) {
+                $sources = array_map(
+                    fn (AgentSource $source): Source => new Source($source->getName(), $source->getReference()),
+                    $result->getMetadata()->get('sources')
+                );
+
+                $this->hub->publish(new Update(
+                    'conversation#'.$message->getConversation()->getId(),
+                    $this->twig->render('conversation/agent_response.stream.html.twig', [
+                        'id' => $message->getId(),
+                        'content' => $response,
+                        'sources' => $sources,
+                    ])
+                ));
             }
         } catch (\Throwable $e) {
             $error = true;
@@ -83,12 +105,15 @@ final readonly class UserQuestionHandler
                 $this->twig->render('conversation/agent_response.stream.html.twig', [
                     'id' => $message->getId(),
                     'content' => $response,
+                    'sources' => [],
                 ])
             ));
         }
 
         $message->setCreatedAt(new \DateTime());
         $message->setContent($response);
+        $message->setSources($sources);
+
         $this->entityManager->flush();
 
         $this->eventDispatcher->dispatch(new AgentResponseEvent($message->getContent(), $message->getConversation(), $error), Events::AGENT_RESPONSE);

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Dto\Source;
 use App\Enum\MessageType;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
@@ -20,6 +21,12 @@ class Message
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
+
+    /**
+     * @var Source[]|null
+     */
+    #[ORM\Column(type: 'json_document', nullable: true, options: ['jsonb' => true])]
+    public ?array $sources = null;
 
     #[ORM\Column]
     private \DateTime $createdAt;
@@ -58,6 +65,24 @@ class Message
     public function setContent(string $content): static
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    /**
+     * @return Source[]
+     */
+    public function getSources(): array
+    {
+        return $this->sources ?? [];
+    }
+
+    /**
+     * @param Source[] $sources
+     */
+    public function setSources(array $sources): static
+    {
+        $this->sources = $sources;
 
         return $this;
     }

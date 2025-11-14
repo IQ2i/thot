@@ -4,7 +4,7 @@
             {% if message.type == enum('App\\Enum\\MessageType').USER %}
                 <twig:Conversation:Message:User :id="message.id" :content="message.content" :createdAt="message.createdAt" />
             {% elseif message.type == enum('App\\Enum\\MessageType').ASSISTANT %}
-                <twig:Conversation:Message:Assistant :id="message.id" :content="message.content" />
+                <twig:Conversation:Message:Assistant :id="message.id" :content="message.content" :sources="message.sources"/>
             {% endif %}
         {% endfor %}
     </div>

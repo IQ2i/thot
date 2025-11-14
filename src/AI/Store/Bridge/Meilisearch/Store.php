@@ -60,6 +60,7 @@ final readonly class Store implements ManagedStoreInterface, StoreInterface
     {
         $params = [
             'q' => $options['query'],
+            'limit' => $options['limit'] ?? 3,
             'vector' => $vector->getData(),
             'showRankingScore' => true,
             'retrieveVectors' => true,

@@ -1,9 +1,20 @@
-{% props id, content = null %}
+{% props id, content = null, sources = [] %}
 
 <div id="message-{{ id }}" class="flex flex-col justify-start items-start w-full gap-2.5" {{ attributes }}>
     <div class="w-full prose dark:prose-invert">
         {% if content is not null %}
             {{ content|markdown_to_html }}
         {% endif %}
+    </div>
+
+    <div class="flex flex-wrap items-center gap-1.5">
+        {% for source in sources %}
+            <a href="{{ source.webUrl }}" target="_blank" class="inline-flex items-center gap-x-1.5 rounded-full bg-white px-2.5 py-1 text-xs text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">
+                {{ source.name }}
+                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-mr-0.5 size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+            </a>
+        {% endfor %}
     </div>
 </div>

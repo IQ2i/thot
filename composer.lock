@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f80c547fabc68a57d6bcd1c4d83cf05e",
+    "content-hash": "bd9b6b07ca424d15c2dfde62075f5aad",
     "packages": [
         {
             "name": "composer/semver",
@@ -1155,6 +1155,90 @@
                 }
             ],
             "time": "2025-10-31T18:51:33+00:00"
+        },
+        {
+            "name": "dunglas/doctrine-json-odm",
+            "version": "v1.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dunglas/doctrine-json-odm.git",
+                "reference": "c76280318ffb60aecceaf7f178298727c3dc35a5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dunglas/doctrine-json-odm/zipball/c76280318ffb60aecceaf7f178298727c3dc35a5",
+                "reference": "c76280318ffb60aecceaf7f178298727c3dc35a5",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/orm": "^2.6.3 || ^3.0.0",
+                "php": ">=8.1",
+                "symfony/property-access": "^5.4 || ^6.0 || ^7.0",
+                "symfony/property-info": "^5.4 || ^6.0 || ^7.0",
+                "symfony/serializer": "^5.4 || ^6.0 || ^7.0"
+            },
+            "require-dev": {
+                "doctrine/annotations": "^1.0 || ^2.0.0",
+                "doctrine/dbal": "^2.7 || ^3.3 || ^4.0.0",
+                "doctrine/doctrine-bundle": "^1.12.13 || ^2.2",
+                "symfony/finder": "^5.4 || ^6.0 || ^7.0",
+                "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0",
+                "symfony/phpunit-bridge": "^6.0 || ^7.0",
+                "symfony/uid": "^5.4 || ^6.0 || ^7.0",
+                "symfony/validator": "^5.4 || ^6.0 || ^7.0"
+            },
+            "suggest": {
+                "scienta/doctrine-json-functions": "To add support for JSON functions in DQL.",
+                "symfony/framework-bundle": "To use the provided bundle."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dunglas\\DoctrineJsonOdm\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kévin Dunglas",
+                    "email": "kevin@dunglas.fr",
+                    "homepage": "https://dunglas.fr"
+                }
+            ],
+            "description": "An object document mapper for Doctrine ORM using JSON types of modern RDBMS.",
+            "homepage": "https://dunglas.fr",
+            "keywords": [
+                "database",
+                "json",
+                "mysql",
+                "odm",
+                "orm",
+                "postgresql",
+                "rdbms"
+            ],
+            "support": {
+                "issues": "https://github.com/dunglas/doctrine-json-odm/issues",
+                "source": "https://github.com/dunglas/doctrine-json-odm/tree/v1.4.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/dunglas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/dunglas/doctrine-json-odm",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-11-26T13:57:21+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -3743,12 +3827,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ai-agent.git",
-                "reference": "d5249de5dfa26b4f492a5ff67281482a422636f5"
+                "reference": "98bc96ef6b988633c4a7696b230066a0b485231c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ai-agent/zipball/d5249de5dfa26b4f492a5ff67281482a422636f5",
-                "reference": "d5249de5dfa26b4f492a5ff67281482a422636f5",
+                "url": "https://api.github.com/repos/symfony/ai-agent/zipball/98bc96ef6b988633c4a7696b230066a0b485231c",
+                "reference": "98bc96ef6b988633c4a7696b230066a0b485231c",
                 "shasum": ""
             },
             "require": {
@@ -3833,7 +3917,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-01T00:06:06+00:00"
+            "time": "2025-11-14T07:52:06+00:00"
         },
         {
             "name": "symfony/ai-platform",
@@ -3841,12 +3925,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ai-platform.git",
-                "reference": "4a1ed9d6faa267c5133c5092f23302d541ec66b1"
+                "reference": "64c7a4e9ba4a2ccedb8e3e4f94225a5125f3b78e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ai-platform/zipball/4a1ed9d6faa267c5133c5092f23302d541ec66b1",
-                "reference": "4a1ed9d6faa267c5133c5092f23302d541ec66b1",
+                "url": "https://api.github.com/repos/symfony/ai-platform/zipball/64c7a4e9ba4a2ccedb8e3e4f94225a5125f3b78e",
+                "reference": "64c7a4e9ba4a2ccedb8e3e4f94225a5125f3b78e",
                 "shasum": ""
             },
             "require": {
@@ -3956,7 +4040,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-09T23:02:00+00:00"
+            "time": "2025-11-12T23:52:30+00:00"
         },
         {
             "name": "symfony/ai-store",
@@ -3964,12 +4048,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ai-store.git",
-                "reference": "cddf994ac36e5c9559d0fa1cdbd369c327095fb2"
+                "reference": "bd0c539fc62f83de2bdab4bfb37a8fea4c85aad5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ai-store/zipball/cddf994ac36e5c9559d0fa1cdbd369c327095fb2",
-                "reference": "cddf994ac36e5c9559d0fa1cdbd369c327095fb2",
+                "url": "https://api.github.com/repos/symfony/ai-store/zipball/bd0c539fc62f83de2bdab4bfb37a8fea4c85aad5",
+                "reference": "bd0c539fc62f83de2bdab4bfb37a8fea4c85aad5",
                 "shasum": ""
             },
             "require": {
@@ -4066,7 +4150,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-11T10:35:02+00:00"
+            "time": "2025-11-12T22:20:44+00:00"
         },
         {
             "name": "symfony/asset",

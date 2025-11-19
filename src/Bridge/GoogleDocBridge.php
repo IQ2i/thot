@@ -55,7 +55,7 @@ readonly class GoogleDocBridge implements BridgeInterface
 
         $metadata = $this->getFileMetadata($documentId);
         if (null !== $document) {
-            if ($document->getUpdatedAt() >= $metadata['modifiedTime']) {
+            if ($document->getSyncedAt() >= $metadata['modifiedTime']) {
                 return;
             }
 
@@ -95,7 +95,7 @@ readonly class GoogleDocBridge implements BridgeInterface
         $documents = $this->entityManager->getRepository(Document::class)->findToUpdate($source);
         foreach ($documents as $document) {
             $metadata = $this->getFileMetadata($document->getExternalId());
-            if ($document->getUpdatedAt() >= $metadata['modifiedTime']) {
+            if ($document->getSyncedAt() >= $metadata['modifiedTime']) {
                 continue;
             }
 

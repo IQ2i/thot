@@ -53,14 +53,7 @@ readonly class GoogleDocBridge implements BridgeInterface
             'externalId' => $documentId,
         ]);
 
-        $metadata = $this->getFileMetadata($documentId);
         if (null !== $document) {
-            if ($document->getSyncedAt() >= $metadata['modifiedTime']) {
-                return;
-            }
-
-            $this->updateSingleDocument($document, $documentId, $metadata);
-
             return;
         }
 
@@ -72,6 +65,7 @@ readonly class GoogleDocBridge implements BridgeInterface
             return;
         }
 
+        $metadata = $this->getFileMetadata($documentId);
         $content = $this->extractDocumentContent($googleDoc);
         $webUrl = "https://docs.google.com/document/d/{$documentId}";
 
@@ -210,7 +204,10 @@ readonly class GoogleDocBridge implements BridgeInterface
     {
         $documentIds = [];
 
-        $query = \sprintf("'%s' in parents and trashed = false", $folderId);
+        $query = \sprintf(
+            "'%s' in parents and trashed = false and (mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.google-apps.document')",
+            $folderId
+        );
         $pageToken = null;
 
         do {
@@ -229,7 +226,7 @@ readonly class GoogleDocBridge implements BridgeInterface
                 if ('application/vnd.google-apps.folder' === $file->getMimeType()) {
                     $subFiles = $this->listDocumentsInFolder($file->getId(), $currentPath);
                     $documentIds = array_merge($documentIds, $subFiles);
-                } else {
+                } elseif ('application/vnd.google-apps.document' === $file->getMimeType()) {
                     $documentIds[] = $file->getId();
                 }
             }

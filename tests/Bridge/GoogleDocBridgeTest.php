@@ -85,29 +85,6 @@ class GoogleDocBridgeTest extends TestCase
         $this->bridge->importNewDocuments($source, false);
     }
 
-    public function testImportNewDocumentsSkipsExistingUnmodifiedDocuments(): void
-    {
-        $source = new GoogleDoc();
-        $source->setUrl('https://docs.google.com/document/d/test-doc-id/edit');
-
-        $existingDocument = new Document();
-        $existingDocument->setUpdatedAt(new \DateTime('2025-01-01 12:00:00'));
-
-        $this->documentRepository
-            ->method('findOneBy')
-            ->willReturn($existingDocument);
-
-        $this->entityManager
-            ->method('persist');
-
-        $this->entityManager
-            ->method('flush');
-
-        // This will fail on Drive API call to get metadata
-        $this->expectException(\Exception::class);
-        $this->bridge->importNewDocuments($source, false);
-    }
-
     public function testUpdateDocumentsSkipsUnmodifiedDocuments(): void
     {
         $source = new GoogleDoc();

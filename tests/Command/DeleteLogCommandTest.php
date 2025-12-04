@@ -32,7 +32,7 @@ class DeleteLogCommandTest extends TestCase
         $command = new DeleteLogCommand($this->entityManager);
 
         $application = new Application();
-        $application->add($command);
+        $application->addCommand($command);
 
         $this->commandTester = new CommandTester($command);
     }

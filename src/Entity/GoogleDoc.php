@@ -7,7 +7,7 @@ use App\Repository\GoogleDocRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GoogleDocRepository::class)]
-class GoogleDoc extends Source
+class GoogleDoc extends Source implements \Stringable
 {
     #[ORM\Column(length: 255)]
     private ?string $url = null;

@@ -7,7 +7,7 @@ use App\Repository\GitlabRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GitlabRepository::class)]
-class Gitlab extends Source
+class Gitlab extends Source implements \Stringable
 {
     #[ORM\Column(length: 255)]
     private ?string $projectUrl = null;

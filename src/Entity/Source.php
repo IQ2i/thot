@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
     SourceType::GOOGLE_DOC->value => GoogleDoc::class,
     SourceType::REDMINE->value => Redmine::class,
 ])]
-abstract class Source
+abstract class Source implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

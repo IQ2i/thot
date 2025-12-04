@@ -56,7 +56,10 @@ final readonly class Store implements ManagedStoreInterface, StoreInterface
         );
     }
 
-    public function query(Vector $vector, array $options = []): array
+    /**
+     * @return iterable<VectorDocument>
+     */
+    public function query(Vector $vector, array $options = []): iterable
     {
         $params = [
             'q' => $options['query'],

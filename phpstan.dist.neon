@@ -11,6 +11,8 @@ parameters:
         - public/
         - src/
         - tests/
+    excludePaths:
+        - config/reference.php
     doctrine:
         objectManagerLoader: tests/object-manager.php
     symfony:

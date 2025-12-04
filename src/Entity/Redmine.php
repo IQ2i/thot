@@ -7,7 +7,7 @@ use App\Repository\RedmineRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RedmineRepository::class)]
-class Redmine extends Source
+class Redmine extends Source implements \Stringable
 {
     #[ORM\Column(length: 255)]
     private ?string $projectUrl = null;

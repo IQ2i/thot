@@ -15,7 +15,6 @@ export default class extends Controller {
 
     // Method to be called before opening the modal to set the delete URL
     setDeleteUrl(event) {
-        event.preventDefault();
         const deleteUrl = event.currentTarget.getAttribute('href') || event.currentTarget.dataset.deleteUrl;
 
         if (deleteUrl) {

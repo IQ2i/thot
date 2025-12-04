@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block body_attributes %}{{ turbo_stream_listen('conversation#' ~ conversation.id) }}{% endblock %}
+{% block body_attributes %}{{ parent() }} {{ turbo_stream_listen('conversation#' ~ conversation.id) }}{% endblock %}
 
 {% block header_title %}
     {% if conversation.name is not null %}

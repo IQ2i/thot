@@ -101,7 +101,7 @@ class ProjectController extends AbstractController
         return $this->redirectToRoute('app_project_sources', ['id' => $project->getId()]);
     }
 
-    #[Route('/delete/{id<\d+>}', name: 'delete')]
+    #[Route('/{id<\d+>}/delete', name: 'delete')]
     public function delete(Project $project): Response
     {
         $this->eventDispatcher->dispatch(new DeleteProjectEvent($project), Events::PROJECT_DELETE);

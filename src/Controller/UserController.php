@@ -79,7 +79,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{id<\d+>}', name: 'delete')]
+    #[Route('/{id<\d+>}/delete', name: 'delete')]
     public function delete(User $user): Response
     {
         $this->eventDispatcher->dispatch(new DeleteUserEvent($user), Events::USER_DELETE);

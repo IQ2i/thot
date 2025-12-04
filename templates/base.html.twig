@@ -13,7 +13,7 @@
         {% endblock %}
     </head>
 
-    <body class="h-full" {% block body_attributes %}{% endblock %}>
+    <body class="h-full" {% block body_attributes %}{{ stimulus_controller('delete-confirmation') }}{% endblock %}>
         <twig:Layout:Flashes/>
 
         <el-dialog>

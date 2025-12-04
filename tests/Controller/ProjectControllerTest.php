@@ -51,7 +51,7 @@ class ProjectControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/projects/delete/1');
+        $client->request('GET', '/projects/1/delete');
 
         $this->assertResponseRedirects('/security/login');
     }

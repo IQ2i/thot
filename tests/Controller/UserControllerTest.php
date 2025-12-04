@@ -51,7 +51,7 @@ class UserControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/users/delete/1');
+        $client->request('GET', '/users/1/delete');
 
         $this->assertResponseRedirects('/security/login');
     }

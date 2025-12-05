@@ -18,6 +18,8 @@ action:
   close: 'Fermer'
   cancel: 'Annuler'
   force_sync: 'Forcer la synchronisation'
+  manage_documents: 'Gérer les documents'
+  add_document: 'Ajouter un document'
 
 # Gestion des utilisateurs
 user:
@@ -57,6 +59,29 @@ sources:
   number_of_documents: 'Nombre de documents'
   last_update: 'Dernière mise à jour'
   sync_now: 'Synchroniser maintenant'
+
+# Documents
+documents:
+  title: 'Documents - %project%'
+  documents: 'Documents'
+  documents_desc: 'Liste des documents locaux de ce projet'
+  title_col: 'Titre'
+  status: 'Statut'
+  created_at: 'Date de création'
+  updated_at: 'Date de modification'
+  closed: 'Fermé'
+  active: 'Actif'
+  no_documents: 'Aucun document'
+  no_documents_desc: 'Commencez par ajouter votre premier document local.'
+
+# Document
+document:
+  edit_document: 'Modifier le document - %title%'
+  new_document: 'Nouveau document'
+  information: 'Informations du document'
+  information_desc: 'Informations de base sur ce document'
+  content: 'Contenu'
+  content_desc: 'Contenu principal du document'
 
 # Conversations
 conversation:
@@ -101,6 +126,9 @@ flash:
   source_updated: 'Source mise à jour'
   conversation_updated: 'Conversation mise à jour'
   conversation_deleted: 'Conversation supprimée'
+  document_created: 'Document créé'
+  document_updated: 'Document mis à jour'
+  document_deleted: 'Document supprimé'
 
 # Libellés de formulaires
 form:
@@ -121,6 +149,10 @@ form:
   google_doc_url: 'URL du document'
   redmine_project_url: 'URL du projet Redmine'
   redmine_access_token: 'Token d''accès à l''API Redmine'
+  document_title: 'Titre du document'
+  document_web_url: 'URL web du document'
+  document_content: 'Contenu du document'
+  document_closed: 'Document fermé'
 
 # Valeurs d'entités
 entity:
@@ -141,3 +173,7 @@ sr:
 delete:
   title: 'Supprimer le contenu'
   message: 'Êtes-vous sûr de vouloir supprimer ce contenu ? Cette action est irréversible.'
+
+# Confirmation
+confirm:
+  delete_document: 'Êtes-vous sûr de vouloir supprimer ce document ? Cette action est irréversible.'

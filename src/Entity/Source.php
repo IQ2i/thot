@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
     SourceType::GITLAB->value => Gitlab::class,
     SourceType::GOOGLE_DOC->value => GoogleDoc::class,
     SourceType::REDMINE->value => Redmine::class,
+    SourceType::LOCAL->value => Local::class,
 ])]
 abstract class Source implements \Stringable
 {

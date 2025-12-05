@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Gitlab;
 use App\Entity\GoogleDoc;
+use App\Entity\Local;
 use App\Entity\Redmine;
 use App\Entity\Source;
 use Symfony\Component\Form\AbstractType;
@@ -32,6 +33,7 @@ class SourceType extends AbstractType
                     'GitLab' => Gitlab::class,
                     'Google Doc' => GoogleDoc::class,
                     'Redmine' => Redmine::class,
+                    'Local' => Local::class,
                 ],
             ])
             ->addDependent('content', 'type', function (DependentField $field, ?string $type): void {
@@ -43,6 +45,7 @@ class SourceType extends AbstractType
                     Gitlab::class => $field->add(GitlabType::class, $params),
                     GoogleDoc::class => $field->add(GoogleDocType::class, $params),
                     Redmine::class => $field->add(RedmineType::class, $params),
+                    Local::class => $field->add(LocalType::class, $params),
                     default => null,
                 };
             });

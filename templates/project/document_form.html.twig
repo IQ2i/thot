@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block header_title %}
+    {% if document.id is not null %}
+        {{ 'document.edit_document'|trans({'%title%': document.title}) }}
+    {% else %}
+        {{ 'document.new_document'|trans }}
+    {% endif %}
+{% endblock %}
+
+{% block header_actions %}
+    <a href="{{ path('app_project_source_documents', {project: project.id, source: source.id}) }}" class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">{{ 'action.cancel'|trans }}</a>
+    <button type="submit" form="{{ field_id(form) }}" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400">{{ 'action.save'|trans }}</button>
+{% endblock %}
+
+{% block content %}
+    {{ form_start(form) }}
+        <div class="divide-y divide-gray-200 dark:divide-white/10">
+            <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                <div>
+                    <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">{{ 'document.information'|trans }}</h2>
+                    <p class="mt-1 text-sm/6 text-gray-500 dark:text-gray-400">{{ 'document.information_desc'|trans }}</p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
+                        {{ form_row(form.title) }}
+                        {{ form_row(form.webUrl) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                <div>
+                    <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">{{ 'document.content'|trans }}</h2>
+                    <p class="mt-1 text-sm/6 text-gray-500 dark:text-gray-400">{{ 'document.content_desc'|trans }}</p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
+                        {{ form_row(form.content) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
